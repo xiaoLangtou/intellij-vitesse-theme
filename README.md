@@ -1,5 +1,5 @@
 
-<h1 align="center">Intellij Vitesse Theme</h1>
+<h1 align="center">Intellij Vitesse Theme 最新版本</h1>
 
 <p align="center">
 <img src="https://github.com/loosheng/intellij-vitesse-theme/workflows/Build/badge.svg" alt="CI Status" />
