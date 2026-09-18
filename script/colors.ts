@@ -25,6 +25,7 @@ export const VitesseThemes = {
 
   background: ['#121212', '#ffffff'],
   activeBackground: ['#181818', '#f7f7f7'],
+  mainWindowBackground: ['#2c2c2c', '#deded8'],
   selectionBackground: ['#eeeeee18', '#22222218'],
   selectionBackgroundActive: ['#eeeeee18', '#22222218'],
   selectionBackgroundInActive: ['#eeeeee10', '#22222210'],
@@ -32,12 +33,14 @@ export const VitesseThemes = {
   // soft overrides
   softBackground: ['#222222', '#F1F0E9'],
   softActiveBackground: ['#292929', '#E7E5DB'],
+  softMainWindowBackground: ['#3a3a3a', '#d4d2c8'],
   softBorder: ['#252525', '#E7E5DB'],
 
   // black overrides
   blackForeground: '#dbd7cacc',
   blackBackground: '#000000',
   blackActiveBackground: '#121212',
+  blackMainWindowBackground: '#1f1f1f',
   blackPunctuation: '#444444',
 
   comment: ['#758575dd', '#a0ada0'],

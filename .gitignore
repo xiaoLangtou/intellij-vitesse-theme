@@ -5,6 +5,7 @@ build
 node_modules
 .DS_Store
 .sandbox
+.intellijPlatform
 src/main/resources/themes/*.json
 src/main/resources/themes/*.xml
 /CLAUDE.md

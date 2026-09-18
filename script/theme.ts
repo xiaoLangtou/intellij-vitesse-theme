@@ -19,6 +19,8 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const border = v('border')
   const background = v('background')
   const activeBackground = v('activeBackground')
+  const mainWindowBackground = v('mainWindowBackground')
+  const transparentBackground = `${background}00`
 
   const punctuation = v('punctuation')
 
@@ -653,9 +655,10 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   return {
     editorTheme: theme.end({ pretty: true }),
     UITheme: {
-      name:options.name,
+      name: options.name,
       dark: options.color === 'dark',
-      editorScheme:options.editorScheme,
+      editorScheme: options.editorScheme,
+      parentTheme: options.color === 'dark' ? 'Islands Dark' : 'Islands Light',
       author: pkg.author,
       ui: {
         '*': {
@@ -680,6 +683,31 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           infoForeground: v('comment'),
 
           primaryText: primary,
+        },
+        'Islands': 1,
+        'Island': {
+          arc: 20,
+          'arc.compact': 16,
+          borderArcLength: 14,
+          'borderArcLength.compact': 10,
+          borderWidth: 6,
+          'borderWidth.compact': 4,
+          borderColor: background,
+          inactiveAlpha: 0.56,
+          toolWindowAlpha: 0.2,
+        },
+        'MainWindow': {
+          background: mainWindowBackground,
+        },
+        'MainToolbar': {
+          background: mainWindowBackground,
+          inactiveBackground: mainWindowBackground,
+          borderColor: transparentBackground,
+        },
+        'StatusBar': {
+          background: mainWindowBackground,
+          borderColor: transparentBackground,
+          topBorderWidth: 0,
         },
         'Component': {
           borderColor: pick({ light: colors.gray[3], dark: colors.gray[1] }),
@@ -737,14 +765,29 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
         },
         'ToolWindow': {
           background,
+          borderColor: transparentBackground,
           Header: {
-            background: activeBackground,
+            background,
             inactiveBackground: background,
           },
           Button: {
             selectedForeground: foreground,
             selectedBackground: activeBackground,
           },
+          Stripe: {
+            background: mainWindowBackground,
+            borderColor: transparentBackground,
+          },
+        },
+        'EditorTabs': {
+          background,
+          hoverBackground: selectionBackground,
+          hoverInactiveBackground: selectionBackgroundInActive,
+          underTabsBorderColor: transparentBackground,
+          underlinedBorderColor: primary,
+          underlinedTabBackground: activeBackground,
+          inactiveUnderlinedTabBorderColor: v('primary', '80'),
+          inactiveUnderlinedTabBackground: activeBackground,
         },
         'CompletionPopup': {
           foreground,

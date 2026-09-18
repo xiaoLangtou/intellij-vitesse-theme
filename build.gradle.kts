@@ -5,87 +5,54 @@ fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
-    // Java support
     id("java")
-    // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.8.10"
-    // Gradle IntelliJ Plugin
-    id("org.jetbrains.intellij") version "1.15.0"
-    // Gradle Changelog Plugin
-    id("org.jetbrains.changelog") version "2.0.0"
-    // Gradle Kover Plugin
-    id("org.jetbrains.kotlinx.kover") version "0.6.1"
+    id("org.jetbrains.intellij.platform") version "2.19.0"
+    id("org.jetbrains.changelog") version "2.5.0"
 }
 
 group = properties("pluginGroup").get()
 version = properties("pluginVersion").get()
 
-// Configure project's dependencies
 repositories {
     mavenCentral()
-}
-
-// Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
-kotlin {
-    jvmToolchain(17)
-}
-
-// Set Java compatibility
-tasks.withType<JavaCompile> {
-    sourceCompatibility = JavaVersion.VERSION_17.toString()
-    targetCompatibility = JavaVersion.VERSION_17.toString()
-}
-
-// Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    pluginName.set(properties("pluginName"))
-    version.set(properties("platformVersion"))
-    type.set(properties("platformType"))
-    
-    // Disable buildSearchableOptions for theme plugins
-    tasks.buildSearchableOptions {
-        enabled = false
+    intellijPlatform {
+        defaultRepositories()
     }
-    
-    // Disable runVerifier for theme plugins
-    tasks.runIde {
-        systemProperty("idea.is.internal", "false")
-    }
-    
-    // Set sandbox directory to avoid permission issues
-    sandboxDir.set("${rootProject.rootDir}/.sandbox")
-    
-    // Plugin Dependencies
-    plugins.set(properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) })
 }
 
-// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
+dependencies {
+    intellijPlatform {
+        create(properties("platformType"), properties("platformVersion"))
+        pluginVerifier()
+        zipSigner()
+    }
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
+}
+
 changelog {
     groups.empty()
     repositoryUrl.set(properties("pluginRepositoryUrl"))
 }
 
-// Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
-kover.xmlReport {
-    onCheck.set(true)
-}
+intellijPlatform {
+    projectName.set(properties("pluginName"))
+    buildSearchableOptions.set(false)
+    sandboxContainer.set(layout.projectDirectory.dir(".sandbox"))
 
-tasks {
-    wrapper {
-        gradleVersion = properties("gradleVersion").get()
-    }
-
-    patchPluginXml {
+    pluginConfiguration {
+        name.set(properties("pluginName"))
         version.set(properties("pluginVersion"))
-        sinceBuild.set(properties("pluginSinceBuild"))
-        untilBuild.set(properties("pluginUntilBuild"))
 
-        // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-        pluginDescription.set(providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
+        description.set(providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
             val start = "<!-- Plugin description -->"
             val end = "<!-- Plugin description end -->"
 
-            with (it.lines()) {
+            with(it.lines()) {
                 if (!containsAll(listOf(start, end))) {
                     throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
                 }
@@ -93,8 +60,7 @@ tasks {
             }
         })
 
-        val changelog = project.changelog // local variable for configuration cache compatibility
-        // Get the latest available change notes from the changelog file
+        val changelog = project.changelog
         changeNotes.set(properties("pluginVersion").map { pluginVersion ->
             with(changelog) {
                 renderItem(
@@ -105,72 +71,70 @@ tasks {
                 )
             }
         })
+
+        ideaVersion {
+            sinceBuild.set(properties("pluginSinceBuild"))
+            properties("pluginUntilBuild").orNull
+                ?.takeIf(String::isNotBlank)
+                ?.let(untilBuild::set)
+        }
     }
 
-    // Configure UI tests plugin
-    // Read more: https://github.com/JetBrains/intellij-ui-test-robot
-    runIdeForUiTests {
-        systemProperty("robot-server.port", "8082")
-        systemProperty("ide.mac.message.dialogs.as.sheets", "false")
-        systemProperty("jb.privacy.policy.text", "<!--999.999-->")
-        systemProperty("jb.consents.confirmation.enabled", "false")
-    }
-
-    signPlugin {
+    signing {
         certificateChain.set(environment("CERTIFICATE_CHAIN"))
         privateKey.set(environment("PRIVATE_KEY"))
         password.set(environment("PRIVATE_KEY_PASSWORD"))
     }
 
-    publishPlugin {
-        dependsOn("patchChangelog")
+    publishing {
         token.set(environment("PUBLISH_TOKEN"))
-        // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
-        // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
-        // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-        channels.set(properties("pluginVersion").map { listOf(it.split('-').getOrElse(1) { "default" }.split('.').first()) })
+        channels.set(properties("pluginVersion").map {
+            listOf(it.split('-').getOrElse(1) { "default" }.split('.').first())
+        })
     }
-}
-// npm install task
-tasks.register<Exec>("pnpmInstall") {
-    group = "build"
-    description = "Install npm dependencies"
-    workingDir = project.rootDir
-    commandLine("pnpm", "install")
-    
-    val packageJson = project.file("package.json")
-    val nodeModules = project.file("node_modules")
-    
-    onlyIf {
-        // Execute only when the package.json exists and the node_modules directory does not exist.
-        packageJson.exists() && !nodeModules.exists()
-    }
-    
-    // Add log output for easier debugging
-    doFirst {
-        if (nodeModules.exists()) {
-            println("node_modules already exists, skipping pnpm install")
-        } else if (!packageJson.exists()) {
-            println("package.json not found, skipping pnpm install")
+
+    pluginVerification {
+        ides {
+            current()
         }
     }
 }
-// npm run build
-val pnpmBuild = tasks.register<Exec>("pnpmBuild") {
-    group = "build"
-    description = "Run pnpm build"
-    workingDir = project.rootDir
-    commandLine("pnpm", "run", "build")
 
-    dependsOn(":pnpmInstall")
+tasks {
+    runIde {
+        systemProperty("idea.is.internal", "false")
+    }
+
+    wrapper {
+        gradleVersion = properties("gradleVersion").get()
+    }
 }
 
-// Ensure themes are generated before resources are processed
+tasks.register<Exec>("pnpmInstall") {
+    group = "build"
+    description = "Install theme generator dependencies"
+    workingDir = project.rootDir
+    commandLine("pnpm", "install", "--frozen-lockfile")
+
+    val packageJson = project.file("package.json")
+    val nodeModules = project.file("node_modules")
+    onlyIf {
+        packageJson.exists() && !nodeModules.exists()
+    }
+}
+
+val pnpmBuild = tasks.register<Exec>("pnpmBuild") {
+    group = "build"
+    description = "Generate IntelliJ UI themes and editor schemes"
+    workingDir = project.rootDir
+    commandLine("pnpm", "run", "build")
+    dependsOn("pnpmInstall")
+}
+
 tasks.named("processResources") {
     dependsOn(pnpmBuild)
 }
 
-// npm build run before buildPlugin
 tasks.named("buildPlugin") {
     dependsOn(pnpmBuild)
 }

@@ -2,7 +2,11 @@
   "name": "intellij-theme-vitesse",
   "description": "",
   "author": "LooSheng",
-  "license": "ISC",
+  "license": "MIT",
+  "packageManager": "pnpm@10.17.0",
+  "engines": {
+    "node": ">=20"
+  },
   "keywords": [],
   "main": "index.js",
   "scripts": {

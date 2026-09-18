@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+### Added
+- Added native Islands UI support for all five theme variants
+
+### Changed
+- Target IntelliJ IDEA 2026.2.2 with IntelliJ Platform Gradle Plugin 2.x
+- Require IntelliJ Platform 2025.3 or newer
+
 ## [0.2.10] - 2025-09-22
 
 ### Optimize

@@ -58,6 +58,8 @@ vscode-theme-vitesse</a></h3>
 ---
 ## Development
 
+Requirements: Node.js 20+, pnpm 10, and JDK 25.
+
 1. Install dependencies
 
 ```bash
@@ -78,7 +80,11 @@ pnpm install
 
 3. modify `script/*` content
 
-4. index done, start intellij IDEA run 'runIde'
+4. After indexing completes, run the `runIde` Gradle task in IntelliJ IDEA, or execute:
+
+```bash
+./gradlew runIde
+```
 
 ---
 
