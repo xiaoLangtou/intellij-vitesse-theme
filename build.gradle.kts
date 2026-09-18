@@ -45,7 +45,6 @@ intellijPlatform {
     sandboxContainer.set(layout.projectDirectory.dir(".sandbox"))
 
     pluginConfiguration {
-        name.set(properties("pluginName"))
         version.set(properties("pluginVersion"))
 
         description.set(providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
@@ -106,7 +105,7 @@ tasks {
     }
 
     wrapper {
-        gradleVersion = properties("gradleVersion").get()
+        gradleVersion = properties("gradleWrapperVersion").get()
     }
 }
 

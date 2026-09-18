@@ -1,7 +1,8 @@
 import builder from 'xmlbuilder'
 import pkg from '../package.json'
-import {createThemeHelpers, GetThemeOptions} from "./helper";
-import {FONT_TYPE} from "./constant";
+import type { GetThemeOptions } from './helper'
+import { createThemeHelpers } from './helper'
+import { FONT_TYPE } from './constant'
 
 export default function getEditorSchemeTheme(options: GetThemeOptions) {
   // Usage: `pick({ light: "lightblue", dark: "darkblue" })`
@@ -25,7 +26,6 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const punctuation = v('punctuation')
 
   const selectionBackground = v('selectionBackground')
-  const selectionBackgroundActive = v('selectionBackgroundActive')
   const selectionBackgroundInActive = v('selectionBackgroundInActive')
 
   const selectionBackground2 = pick({ light: '#d3d3d3', dark: '#383838' })
@@ -272,7 +272,6 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const DEFAULT_VALID_STRING_ESCAPE = attributesElement.ele('option', { name: 'DEFAULT_VALID_STRING_ESCAPE' }).ele('value')
   DEFAULT_VALID_STRING_ESCAPE.ele('option', { name: 'FOREGROUND', value: v('string') })
   DEFAULT_VALID_STRING_ESCAPE.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
-
 
   const DEFAULT_ENTITY = attributesElement.ele('option', { name: 'DEFAULT_ENTITY' }).ele('value')
   DEFAULT_ENTITY.ele('option', { name: 'FOREGROUND', value: primary })
@@ -674,7 +673,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           hoverBackground: activeBackground,
 
           selectionForeground: foreground,
-          selectionBackground: selectionBackground,
+          selectionBackground,
           selectionInactiveForeground: foreground,
           selectionInactiveBackground: selectionBackground,
 
@@ -686,15 +685,15 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
         },
         'Islands': 1,
         'Island': {
-          arc: 20,
+          'arc': 20,
           'arc.compact': 16,
-          borderArcLength: 14,
+          'borderArcLength': 14,
           'borderArcLength.compact': 10,
-          borderWidth: 6,
+          'borderWidth': 6,
           'borderWidth.compact': 4,
-          borderColor: background,
-          inactiveAlpha: 0.56,
-          toolWindowAlpha: 0.2,
+          'borderColor': background,
+          'inactiveAlpha': 0.56,
+          'toolWindowAlpha': 0.2,
         },
         'MainWindow': {
           background: mainWindowBackground,

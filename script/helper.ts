@@ -43,9 +43,9 @@ export function createThemeHelpers({ color, soft = false, black = false }: GetTh
 
   const v = (key: keyof typeof VitesseThemes, op = '') => {
     let obj = black
-      ? VitesseThemes[`black${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key]
+      ? (VitesseThemes[`black${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key])
       : soft
-        ? VitesseThemes[`soft${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key]
+        ? (VitesseThemes[`soft${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key])
         : VitesseThemes[key]
 
     if (typeof obj === 'string')
