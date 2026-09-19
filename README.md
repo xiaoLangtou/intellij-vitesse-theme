@@ -1,19 +1,25 @@
 
-<h1 align="center">Intellij Vitesse Theme 最新版本</h1>
+<h1 align="center">XLT Themes</h1>
 
 <p align="center">
 <img src="https://github.com/loosheng/intellij-vitesse-theme/workflows/Build/badge.svg" alt="CI Status" />
-<a href="https://plugins.jetbrains.com/plugin/21401-vitesse-theme">
-<img src="https://img.shields.io/jetbrains/plugin/v/com.github.loosheng.intellijvitessetheme.svg" alt="Intellij Vitesse Theme" />
+<a href="https://plugins.jetbrains.com/plugin/index?xmlId=com.xlt.idea.idea-themes">
+<img src="https://img.shields.io/jetbrains/plugin/v/com.xlt.idea.idea-themes.svg" alt="XLT Themes" />
 </a>
-<a href="https://plugins.jetbrains.com/plugin/21401-vitesse-theme">
-<img src="https://img.shields.io/jetbrains/plugin/d/com.github.loosheng.intellijvitessetheme.svg" alt="Downloads" />
+<a href="https://plugins.jetbrains.com/plugin/index?xmlId=com.xlt.idea.idea-themes">
+<img src="https://img.shields.io/jetbrains/plugin/d/com.xlt.idea.idea-themes.svg" alt="Downloads" />
 </a>
 </p>
 
 <!-- Plugin description -->
 
-A clean, elegant theme collection for IntelliJ-based IDEs, featuring 5 carefully crafted variants: **Vitesse Light**, **Light Soft**, **Dark**, **Dark Soft**, and **Black**. Designed with a minimalist philosophy, this theme provides excellent readability and a comfortable coding experience with balanced contrast and thoughtful color choices.
+A high-contrast JetBrains theme collection built around blue-black ink, amber structure, mint strings, coral values, and rose-pink property names.
+
+The optional **XLT Nightfall Spectrum** variant adds a Monokai Spectrum-inspired semantic palette without changing the original five themes.
+
+**XLT Daylight** provides a dedicated high-contrast light variant with violet structure, green strings, blue functions, cyan types, and rose properties.
+
+**XLT Daylight White** keeps the same Daylight syntax palette on the pure-white background used by XLT Nightfall Light.
 
 Perfect for developers who appreciate clean aesthetics and clear syntax highlighting across all supported languages and file types.
 
@@ -45,8 +51,7 @@ vscode-theme-vitesse</a></h3>
 
 - Using IDE built-in plugin system:
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Vitesse
-  theme"</kbd> >
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "XLT Themes"</kbd> >
   <kbd>Install Plugin</kbd>
 
 - Manually:
@@ -101,7 +106,8 @@ This project Ported from [vscode-theme-vitesse](https://github.com/antfu/vscode-
 ---
 ## License
 MIT - Copyright (c) 2021 Anthony Fu <br>
-MIT - Copyright (c) 2023 LooSheng
+MIT - Copyright (c) 2023 LooSheng <br>
+MIT - Copyright (c) 2026 xlt
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].

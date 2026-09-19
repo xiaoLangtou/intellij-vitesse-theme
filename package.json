@@ -1,7 +1,7 @@
 {
-  "name": "intellij-theme-vitesse",
-  "description": "",
-  "author": "LooSheng",
+  "name": "xlt-themes",
+  "description": "XLT Themes collection for JetBrains IDEs",
+  "author": "xlt",
   "license": "MIT",
   "packageManager": "pnpm@10.17.0",
   "engines": {
@@ -11,7 +11,8 @@
   "main": "index.js",
   "scripts": {
     "build": "esno script/index.ts",
-    "dev": "nodemon --watch script -e ts --exec \"esno script/index.ts\""
+    "dev": "nodemon --watch script -e ts --exec \"esno script/index.ts\"",
+    "verify": "pnpm run build && esno script/verify-theme.ts"
   },
   "dependencies": {
     "xmlbuilder": "^15.1.1"

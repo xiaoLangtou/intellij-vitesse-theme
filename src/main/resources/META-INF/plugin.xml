@@ -1,15 +1,18 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.loosheng.intellijvitessetheme</id>
-    <name>Vitesse Theme</name>
-    <vendor>LooSheng</vendor>
+    <id>com.xlt.idea.idea-themes</id>
+    <name>XLT Themes</name>
+    <vendor>xlt</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <extensions defaultExtensionNs="com.intellij">
-        <themeProvider id="com.github.loosheng.intellijvitessetheme.light" path="/themes/vitesse.light.theme.json" />
-        <themeProvider id="com.github.loosheng.intellijvitessetheme.light.soft" path="/themes/vitesse.light.soft.theme.json" />
-        <themeProvider id="com.github.loosheng.intellijvitessetheme.dark" path="/themes/vitesse.dark.theme.json" />
-        <themeProvider id="com.github.loosheng.intellijvitessetheme.dark.soft" path="/themes/vitesse.dark.soft.theme.json" />
-        <themeProvider id="com.github.loosheng.intellijvitessetheme.black" path="/themes/vitesse.black.theme.json" />
+        <themeProvider id="com.xlt.idea.idea-themes.light" path="/themes/vitesse.light.theme.json" />
+        <themeProvider id="com.xlt.idea.idea-themes.light.soft" path="/themes/vitesse.light.soft.theme.json" />
+        <themeProvider id="com.xlt.idea.idea-themes.dark" path="/themes/vitesse.dark.theme.json" />
+        <themeProvider id="com.xlt.idea.idea-themes.dark.soft" path="/themes/vitesse.dark.soft.theme.json" />
+        <themeProvider id="com.xlt.idea.idea-themes.black" path="/themes/vitesse.black.theme.json" />
+        <themeProvider id="com.xlt.idea.idea-themes.dark.spectrum" path="/themes/vitesse.dark.spectrum.theme.json" />
+        <themeProvider id="com.xlt.idea.idea-themes.daylight" path="/themes/vitesse.daylight.theme.json" />
+        <themeProvider id="com.xlt.idea.idea-themes.daylight.white" path="/themes/vitesse.daylight.white.theme.json" />
     </extensions>
 </idea-plugin>

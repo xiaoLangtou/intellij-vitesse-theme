@@ -21,7 +21,7 @@ async function buildThemes() {
     const VitesseThemes: ThemeBuildMeta[] = [
       {
         base: {
-          name: 'Vitesse Light',
+          name: 'XLT Nightfall Light',
           color: 'light',
         },
         editorThemePath: './src/main/resources/themes/vitesse.light.xml',
@@ -29,7 +29,7 @@ async function buildThemes() {
       },
       {
         base: {
-          name: 'Vitesse Light Soft',
+          name: 'XLT Nightfall Light Soft',
           color: 'light',
           soft: true,
         },
@@ -38,7 +38,7 @@ async function buildThemes() {
       },
       {
         base: {
-          name: 'Vitesse Dark',
+          name: 'XLT Nightfall',
           color: 'dark',
         },
         editorThemePath: './src/main/resources/themes/vitesse.dark.xml',
@@ -46,7 +46,7 @@ async function buildThemes() {
       },
       {
         base: {
-          name: 'Vitesse Dark Soft',
+          name: 'XLT Nightfall Soft',
           color: 'dark',
           soft: true,
         },
@@ -55,12 +55,39 @@ async function buildThemes() {
       },
       {
         base: {
-          name: 'Vitesse Black',
+          name: 'XLT Nightfall Black',
           color: 'dark',
           black: true,
         },
         editorThemePath: './src/main/resources/themes/vitesse.black.xml',
         UIPath: './src/main/resources/themes/vitesse.black.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nightfall Spectrum',
+          color: 'dark',
+          spectrum: true,
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.dark.spectrum.xml',
+        UIPath: './src/main/resources/themes/vitesse.dark.spectrum.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Daylight',
+          color: 'light',
+          daylight: true,
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.daylight.xml',
+        UIPath: './src/main/resources/themes/vitesse.daylight.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Daylight White',
+          color: 'light',
+          daylightWhite: true,
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.daylight.white.xml',
+        UIPath: './src/main/resources/themes/vitesse.daylight.white.theme.json',
       },
 
     ]

@@ -5,6 +5,8 @@ import { createThemeHelpers } from './helper'
 import { FONT_TYPE } from './constant'
 
 export default function getEditorSchemeTheme(options: GetThemeOptions) {
+  const isDaylight = options.daylight || options.daylightWhite
+
   // Usage: `pick({ light: "lightblue", dark: "darkblue" })`
   const {
     pick,
@@ -16,19 +18,34 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const secondaryForeground = v('secondaryForeground')
   const activeForeground = v('activeForeground')
   const primary = v('primary')
+  const secondary = v('secondary')
+  const tertiary = v('tertiary')
+  const success = v('green')
+  const info = v('blue')
+  const warning = v('yellow')
+  const danger = v('red')
+  const functionDeclaration = isDaylight ? v('functionDeclaration') : v('function')
+  const functionCall = isDaylight ? v('functionCall') : v('function')
 
   const border = v('border')
   const background = v('background')
   const activeBackground = v('activeBackground')
+  const elevatedBackground = v('elevatedBackground')
   const mainWindowBackground = v('mainWindowBackground')
   const transparentBackground = `${background}00`
 
   const punctuation = v('punctuation')
 
   const selectionBackground = v('selectionBackground')
+  const selectionBackgroundActive = v('selectionBackgroundActive')
   const selectionBackgroundInActive = v('selectionBackgroundInActive')
+  const successSurface = v('successSurface')
+  const infoSurface = v('infoSurface')
+  const warningSurface = v('warningSurface')
+  const errorSurface = v('errorSurface')
+  const violetSurface = v('violetSurface')
 
-  const selectionBackground2 = pick({ light: '#d3d3d3', dark: '#383838' })
+  const selectionBackground2 = isDaylight ? selectionBackgroundActive : pick({ light: '#d3d3d3', dark: '#313d58' })
 
   // root element
   const theme = builder.create('scheme', { encoding: 'utf-8' })
@@ -80,6 +97,19 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   WHITESPACES_MODIFIED_LINES_COLOR: 表示版本控制中修改后的空格和制表符的颜色
   **/
   const colorsElement = theme.ele('colors')
+  const htmlTagTreeColors = options.spectrum
+    ? ['#ff6b9a', '#62dff0', '#7fe29a', '#ff9d66', '#a99af4', '#ffe66d']
+    : [
+        pick({ light: colors.orange[5], dark: '#ffd166' }),
+        pick({ light: colors.pink[5], dark: '#ff7eb6' }),
+        pick({ light: colors.green[5], dark: '#5be7b0' }),
+        pick({ light: colors.blue[5], dark: '#79c0ff' }),
+        pick({ light: colors.purple[5], dark: '#c6a0ff' }),
+        pick({ light: colors.red[5], dark: '#ff7b72' }),
+      ]
+  htmlTagTreeColors.forEach((value, index) => {
+    colorsElement.ele('option', { name: `HTML_TAG_TREE_LEVEL${index}`, value })
+  })
   // ADDED_LINES_COLOR  表示版本控制中新增行的颜色
   colorsElement.ele('option', { name: 'ADDED_LINES_COLOR', value: v('green') })
   // GUTTER_BACKGROUND 编辑区域左侧行号区域背景色
@@ -232,19 +262,23 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
 
   // eg: const A = 'foo'
   //           ^
-  attributesElement.element('option', { name: 'DEFAULT_CONSTANT' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('constant') })
+  const DEFAULT_CONSTANT = attributesElement.element('option', { name: 'DEFAULT_CONSTANT' }).ele('value')
+  DEFAULT_CONSTANT.ele('option', { name: 'FOREGROUND', value: v('constant') })
+  DEFAULT_CONSTANT.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
 
   // eg: if (a === 1) return for ...
   //      ^              ^    ^
-  attributesElement.ele('option', { name: 'DEFAULT_KEYWORD' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('builtin') })
+  const DEFAULT_KEYWORD = attributesElement.ele('option', { name: 'DEFAULT_KEYWORD' }).ele('value')
+  DEFAULT_KEYWORD.ele('option', { name: 'FOREGROUND', value: v('keyword') })
+  DEFAULT_KEYWORD.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
 
   // eg: function foo(){}
   //                ^
-  attributesElement.ele('option', { name: 'DEFAULT_FUNCTION_DECLARATION' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('function') })
+  attributesElement.ele('option', { name: 'DEFAULT_FUNCTION_DECLARATION' }).ele('value').ele('option', { name: 'FOREGROUND', value: functionDeclaration })
 
   // eg: foo()
   //       ^
-  attributesElement.ele('option', { name: 'DEFAULT_FUNCTION_CALL' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('function') })
+  attributesElement.ele('option', { name: 'DEFAULT_FUNCTION_CALL' }).ele('value').ele('option', { name: 'FOREGROUND', value: functionCall })
 
   // eg: const a = 1
   //               ^
@@ -255,7 +289,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   attributesElement.ele('option', { name: 'DEFAULT_STRING' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('string') })
 
   // 标识符
-  attributesElement.ele('option', { name: 'DEFAULT_IDENTIFIER' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('property') })
+  attributesElement.ele('option', { name: 'DEFAULT_IDENTIFIER' }).ele('value').ele('option', { name: 'FOREGROUND', value: foreground })
 
   // var a = 1
   //     ^
@@ -301,7 +335,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   // eg: <span title='foo'></span>
   //             ^
   const DEFAULT_ATTRIBUTE = attributesElement.ele('option', { name: 'DEFAULT_ATTRIBUTE' }).ele('value')
-  DEFAULT_ATTRIBUTE.ele('option', { name: 'FOREGROUND', value: v('variable') })
+  DEFAULT_ATTRIBUTE.ele('option', { name: 'FOREGROUND', value: v('property') })
 
   const TEXT_SEARCH_RESULT_ATTRIBUTES = attributesElement.ele('option', { name: 'TEXT_SEARCH_RESULT_ATTRIBUTES' }).ele('value')
   TEXT_SEARCH_RESULT_ATTRIBUTES.ele('option', { name: 'BACKGROUND', value: pick({ light: '#e6cc7766', dark: '#e6cc7744' }) })
@@ -318,8 +352,8 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   STATIC_FIELD_ATTRIBUTES.ele('option', { name: 'FOREGROUND', value: v('property') })
 
   const STATIC_FINAL_FIELD_ATTRIBUTES = attributesElement.ele('option', { name: 'STATIC_FINAL_FIELD_ATTRIBUTES' }).ele('value')
-  STATIC_FINAL_FIELD_ATTRIBUTES.ele('option', { name: 'FOREGROUND', value: v('property') })
-  STATIC_FINAL_FIELD_ATTRIBUTES.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOTH })
+  STATIC_FINAL_FIELD_ATTRIBUTES.ele('option', { name: 'FOREGROUND', value: v('constant') })
+  STATIC_FINAL_FIELD_ATTRIBUTES.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
 
   const DEFAULT_INVALID_STRING_ESCAPE = attributesElement.ele('option', { name: 'DEFAULT_INVALID_STRING_ESCAPE' }).ele('value')
   DEFAULT_INVALID_STRING_ESCAPE.ele('option', { name: 'FOREGROUND', value: v('comment') })
@@ -329,7 +363,8 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const DEFAULT_LOCAL_VARIABLE = attributesElement.ele('option', { name: 'DEFAULT_LOCAL_VARIABLE' }).ele('value')
   DEFAULT_LOCAL_VARIABLE.ele('option', { name: 'FOREGROUND', value: v('variable') })
   const DEFAULT_PARAMETER = attributesElement.ele('option', { name: 'DEFAULT_PARAMETER' }).ele('value')
-  DEFAULT_PARAMETER.ele('option', { name: 'FOREGROUND', value: v('variable') })
+  DEFAULT_PARAMETER.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isDaylight) ? v('parameter') : pick({ light: v('variable'), dark: '#f0d5a8' }) })
+  DEFAULT_PARAMETER.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
 
   attributesElement.ele('option', { name: 'DEFAULT_REASSIGNED_LOCAL_VARIABLE', baseAttributes: 'DEFAULT_LOCAL_VARIABLE' })
   attributesElement.ele('option', { name: 'DEFAULT_REASSIGNED_PARAMETER', baseAttributes: 'DEFAULT_PARAMETER' })
@@ -341,24 +376,47 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const DEFAULT_OPERATION_SIGN = attributesElement.ele('option', { name: 'DEFAULT_OPERATION_SIGN' }).ele('value')
   DEFAULT_OPERATION_SIGN.ele('option', { name: 'FOREGROUND', value: v('operator') })
 
-  // <option name="HTML_ATTRIBUTE_NAME" baseAttributes="DEFAULT_ATTRIBUTE" />
-  attributesElement.ele('option', { name: 'HTML_ATTRIBUTE_NAME', baseAttributes: 'DEFAULT_ATTRIBUTE' })
-  // <option name="HTML_ATTRIBUTE_VALUE" baseAttributes="DEFAULT_STRING" />
-  attributesElement.ele('option', { name: 'HTML_ATTRIBUTE_VALUE', baseAttributes: 'DEFAULT_STRING' })
+  // Explicit generic coverage prevents unmapped language tokens from falling back to Darcula gray.
+  for (const name of ['DEFAULT_BRACES', 'DEFAULT_BRACKETS', 'DEFAULT_PARENTHS'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: punctuation })
+  for (const name of ['DEFAULT_COMMENT', 'DEFAULT_LINE_COMMENT', 'DEFAULT_DOC_COMMENT']) {
+    const value = attributesElement.ele('option', { name }).ele('value')
+    value.ele('option', { name: 'FOREGROUND', value: v('comment') })
+    value.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
+  }
+  attributesElement.ele('option', { name: 'DEFAULT_INSTANCE_METHOD' }).ele('value').ele('option', { name: 'FOREGROUND', value: functionCall })
+  attributesElement.ele('option', { name: 'DEFAULT_HIGHLIGHTED_REFERENCE' }).ele('value').ele('option', { name: 'FOREGROUND', value: activeForeground })
+
+  // Vue templates use the HTML/XML token family rather than generic defaults.
+  // Set all of these explicitly so WebStorm does not inherit Darcula colors.
+  const HTML_ATTRIBUTE_NAME = attributesElement.ele('option', { name: 'HTML_ATTRIBUTE_NAME' }).ele('value')
+  HTML_ATTRIBUTE_NAME.ele('option', { name: 'FOREGROUND', value: v('property') })
+  const HTML_ATTRIBUTE_VALUE = attributesElement.ele('option', { name: 'HTML_ATTRIBUTE_VALUE' }).ele('value')
+  HTML_ATTRIBUTE_VALUE.ele('option', { name: 'FOREGROUND', value: v('string') })
 
   const HTML_TAG = attributesElement.ele('option', { name: 'HTML_TAG' }).ele('value')
-  HTML_TAG.ele('option', { name: 'FOREGROUND', value: colors.gray[5] })
+  HTML_TAG.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
   HTML_TAG.ele('option', { name: 'BACKGROUND', value: background })
 
   const HTML_TAG_NAME = attributesElement.ele('option', { name: 'HTML_TAG_NAME' }).ele('value')
-  HTML_TAG_NAME.ele('option', { name: 'FOREGROUND', value: v('keyword') })
+  HTML_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('keyword') : primary })
+  HTML_TAG_NAME.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
   const HTML_CUSTOM_TAG_NAME = attributesElement.ele('option', { name: 'HTML_CUSTOM_TAG_NAME' }).ele('value')
-  HTML_CUSTOM_TAG_NAME.ele('option', { name: 'FOREGROUND', value: v('variable') })
+  HTML_CUSTOM_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+  const HTML_ENTITY_REFERENCE = attributesElement.ele('option', { name: 'HTML_ENTITY_REFERENCE' }).ele('value')
+  HTML_ENTITY_REFERENCE.ele('option', { name: 'FOREGROUND', value: danger })
+  attributesElement.ele('option', { name: 'HTML_CODE' }).ele('value').ele('option', { name: 'FOREGROUND', value: foreground })
+  const HTML_COMMENT = attributesElement.ele('option', { name: 'HTML_COMMENT' }).ele('value')
+  HTML_COMMENT.ele('option', { name: 'FOREGROUND', value: v('comment') })
+  HTML_COMMENT.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
+  const VUE_TAG_NAME = attributesElement.ele('option', { name: 'VUE_TAG_NAME' }).ele('value')
+  VUE_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+  VUE_TAG_NAME.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
 
-  // <option name="XML_ATTRIBUTE_NAME" baseAttributes="DEFAULT_ATTRIBUTE" />
-  attributesElement.ele('option', { name: 'XML_ATTRIBUTE_NAME', baseAttributes: 'DEFAULT_ATTRIBUTE' })
-  // <option name="XML_ATTRIBUTE_VALUE" baseAttributes="DEFAULT_STRING" />
-  attributesElement.ele('option', { name: 'XML_ATTRIBUTE_VALUE', baseAttributes: 'DEFAULT_STRING' })
+  const XML_ATTRIBUTE_NAME = attributesElement.ele('option', { name: 'XML_ATTRIBUTE_NAME' }).ele('value')
+  XML_ATTRIBUTE_NAME.ele('option', { name: 'FOREGROUND', value: v('property') })
+  const XML_ATTRIBUTE_VALUE = attributesElement.ele('option', { name: 'XML_ATTRIBUTE_VALUE' }).ele('value')
+  XML_ATTRIBUTE_VALUE.ele('option', { name: 'FOREGROUND', value: v('string') })
   // <option name="XML_TAG">
   //   <value>
   //     <option name="FOREGROUND" value="959da5" />
@@ -366,7 +424,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //   </value>
   // </option>
   const XML_TAG = attributesElement.ele('option', { name: 'XML_TAG' }).ele('value')
-  XML_TAG.ele('option', { name: 'FOREGROUND', value: colors.gray[5] })
+  XML_TAG.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
   XML_TAG.ele('option', { name: 'BACKGROUND', value: background })
   // <option name="XML_TAG_NAME">
   //   <value>
@@ -374,14 +432,25 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //   </value>
   // </option>
   const XML_TAG_NAME = attributesElement.ele('option', { name: 'XML_TAG_NAME' }).ele('value')
-  XML_TAG_NAME.ele('option', { name: 'FOREGROUND', value: v('keyword') })
+  XML_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('keyword') : primary })
+  const XML_CUSTOM_TAG_NAME = attributesElement.ele('option', { name: 'XML_CUSTOM_TAG_NAME' }).ele('value')
+  XML_CUSTOM_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+  const XML_ENTITY_REFERENCE = attributesElement.ele('option', { name: 'XML_ENTITY_REFERENCE' }).ele('value')
+  XML_ENTITY_REFERENCE.ele('option', { name: 'FOREGROUND', value: danger })
+  const XML_NS_PREFIX = attributesElement.ele('option', { name: 'XML_NS_PREFIX' }).ele('value')
+  XML_NS_PREFIX.ele('option', { name: 'FOREGROUND', value: v('orange') })
+  const XML_PROLOGUE = attributesElement.ele('option', { name: 'XML_PROLOGUE' }).ele('value')
+  XML_PROLOGUE.ele('option', { name: 'FOREGROUND', value: foreground })
+  XML_PROLOGUE.ele('option', { name: 'BACKGROUND', value: background })
 
   // <option name="JS.GLOBAL_FUNCTION" baseAttributes="DEFAULT_FUNCTION_DECLARATION" />
   // <option name="JS.GLOBAL_VARIABLE" baseAttributes="DEFAULT_GLOBAL_VARIABLE" />
   // <option name="JS.LOCAL_VARIABLE" baseAttributes="DEFAULT_LOCAL_VARIABLE" />
   attributesElement.ele('option', { name: 'JS.GLOBAL_FUNCTION', baseAttributes: 'DEFAULT_FUNCTION_DECLARATION' })
-  attributesElement.ele('option', { name: 'JS.GLOBAL_VARIABLE', baseAttributes: 'DEFAULT_GLOBAL_VARIABLE' })
-  attributesElement.ele('option', { name: 'JS.LOCAL_VARIABLE', baseAttributes: 'DEFAULT_LOCAL_VARIABLE' })
+  const JS_GLOBAL_VARIABLE = attributesElement.ele('option', { name: 'JS.GLOBAL_VARIABLE' }).ele('value')
+  JS_GLOBAL_VARIABLE.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('namespace') : v('property') })
+  const JS_LOCAL_VARIABLE = attributesElement.ele('option', { name: 'JS.LOCAL_VARIABLE' }).ele('value')
+  JS_LOCAL_VARIABLE.ele('option', { name: 'FOREGROUND', value: v('variable') })
 
   //   <option name="JS.MODULE_NAME">
   //   <value>
@@ -401,12 +470,13 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   // <option name="JS.INSTANCE_MEMBER_FUNCTION" baseAttributes="DEFAULT_INSTANCE_METHOD" />
 
   const JS_MODULE_NAME = attributesElement.ele('option', { name: 'JS.MODULE_NAME' }).ele('value')
-  JS_MODULE_NAME.ele('option', { name: 'FOREGROUND', value: v('namespace') })
+  JS_MODULE_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('namespace') : foreground })
   const JS_PRIMITIVE_TYPE = attributesElement.ele('option', { name: 'JS.PRIMITIVE.TYPE' }).ele('value')
   JS_PRIMITIVE_TYPE.ele('option', { name: 'FOREGROUND', value: v('type') })
   const JS_TYPE_ALIAS = attributesElement.ele('option', { name: 'JS.TYPE_ALIAS' }).ele('value')
   JS_TYPE_ALIAS.ele('option', { name: 'FOREGROUND', value: v('type') })
-  attributesElement.ele('option', { name: 'JS.INSTANCE_MEMBER_FUNCTION', baseAttributes: 'DEFAULT_INSTANCE_METHOD' })
+  const JS_INSTANCE_MEMBER_FUNCTION = attributesElement.ele('option', { name: 'JS.INSTANCE_MEMBER_FUNCTION' }).ele('value')
+  JS_INSTANCE_MEMBER_FUNCTION.ele('option', { name: 'FOREGROUND', value: functionCall })
 
   //   <option name="JS.DOC_TYPE">
   //   <value>
@@ -425,8 +495,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   // </option>
 
   const CSS_IMPORTANT = attributesElement.ele('option', { name: 'CSS.IMPORTANT' }).ele('value')
-  CSS_IMPORTANT.ele('option', { name: 'FOREGROUND', value: primary })
-  CSS_IMPORTANT.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
+  CSS_IMPORTANT.ele('option', { name: 'FOREGROUND', value: danger })
 
   // Code Lens border color
   // <option name="CODE_LENS_BORDER_COLOR">
@@ -445,8 +514,8 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //     </value>
   // </option>
   const CSS_URL = attributesElement.ele('option', { name: 'CSS.URL' }).ele('value')
-  CSS_URL.ele('option', { name: 'FOREGROUND', value: v('orange') })
-  CSS_URL.ele('option', { name: 'EFFECT_COLOR', value: v('orange') })
+  CSS_URL.ele('option', { name: 'FOREGROUND', value: v('string') })
+  CSS_URL.ele('option', { name: 'EFFECT_COLOR', value: v('number') })
   CSS_URL.ele('option', { name: 'EFFECT_TYPE', value: '1' })
 
   //   <option name="JS.BRACES">
@@ -476,15 +545,17 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //     </value>
   //   </option>
   const JS_BRACES = attributesElement.ele('option', { name: 'JS.BRACES' }).ele('value')
-  JS_BRACES.ele('option', { name: 'FOREGROUND', value: primary })
+  JS_BRACES.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
   const JS_BRACKETS = attributesElement.ele('option', { name: 'JS.BRACKETS' }).ele('value')
-  JS_BRACKETS.ele('option', { name: 'FOREGROUND', value: primary })
+  JS_BRACKETS.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
   const JS_PARENTHS = attributesElement.ele('option', { name: 'JS.PARENTHS' }).ele('value')
-  JS_PARENTHS.ele('option', { name: 'FOREGROUND', value: primary })
+  JS_PARENTHS.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
   const JS_KEYWORD = attributesElement.ele('option', { name: 'JS.KEYWORD' }).ele('value')
-  JS_KEYWORD.ele('option', { name: 'FOREGROUND', value: v('builtin') })
+  JS_KEYWORD.ele('option', { name: 'FOREGROUND', value: v('keyword') })
+  JS_KEYWORD.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
   const JS_PARAMETER = attributesElement.ele('option', { name: 'JS.PARAMETER' }).ele('value')
-  JS_PARAMETER.ele('option', { name: 'FOREGROUND', value: v('variable') })
+  JS_PARAMETER.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isDaylight) ? v('parameter') : pick({ light: foreground, dark: '#f0d5a8' }) })
+  JS_PARAMETER.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
   /**
    *     <option name="JS.REGEXP">
    *       <value>
@@ -495,6 +566,137 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
    */
   const JS_REGEXP = attributesElement.ele('option', { name: 'JS.REGEXP' }).ele('value')
   JS_REGEXP.ele('option', { name: 'FOREGROUND', value: v('regex') })
+  const JS_STRING = attributesElement.ele('option', { name: 'JS.STRING' }).ele('value')
+  JS_STRING.ele('option', { name: 'FOREGROUND', value: v('string') })
+  const JS_NUMBER = attributesElement.ele('option', { name: 'JS.NUMBER' }).ele('value')
+  JS_NUMBER.ele('option', { name: 'FOREGROUND', value: v('number') })
+  const JS_LINE_COMMENT = attributesElement.ele('option', { name: 'JS.LINE_COMMENT' }).ele('value')
+  JS_LINE_COMMENT.ele('option', { name: 'FOREGROUND', value: v('comment') })
+  const JS_BLOCK_COMMENT = attributesElement.ele('option', { name: 'JS.BLOCK_COMMENT' }).ele('value')
+  JS_BLOCK_COMMENT.ele('option', { name: 'FOREGROUND', value: v('comment') })
+  const JS_DECORATOR = attributesElement.ele('option', { name: 'JS.DECORATOR' }).ele('value')
+  JS_DECORATOR.ele('option', { name: 'FOREGROUND', value: v('decorator') })
+  const JS_FUNCTION_ARROW = attributesElement.ele('option', { name: 'JS.FUNCTION_ARROW' }).ele('value')
+  JS_FUNCTION_ARROW.ele('option', { name: 'FOREGROUND', value: v('operator') })
+  const VUE_SCRIPT_DELIMITERS = attributesElement.ele('option', { name: 'VUE.SCRIPT_DELIMITERS' }).ele('value')
+  VUE_SCRIPT_DELIMITERS.ele('option', { name: 'FOREGROUND', value: v('orange') })
+
+  const JS_ATTRIBUTE = attributesElement.ele('option', { name: 'JS.ATTRIBUTE' }).ele('value')
+  JS_ATTRIBUTE.ele('option', { name: 'FOREGROUND', value: v('property') })
+  JS_ATTRIBUTE.ele('option', { name: 'BACKGROUND', value: pick({ light: '#fff0f0', dark: '#382832' }) })
+  for (const name of ['JS.CLASS', 'JS.EXPORTED.CLASS'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('class') })
+  attributesElement.ele('option', { name: 'JS.INTERFACE' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('interface') })
+  for (const name of ['JS.GLOBAL_FUNCTION', 'JS.EXPORTED.FUNCTION', 'JS.LOCAL_FUNCTION'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: functionDeclaration })
+  attributesElement.ele('option', { name: 'JS.STATIC_MEMBER_FUNCTION' }).ele('value').ele('option', { name: 'FOREGROUND', value: functionCall })
+  for (const name of ['JS.EXPORTED.VARIABLE', 'JS.INSTANCE_MEMBER_VARIABLE', 'JS.STATIC_MEMBER_VARIABLE'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('property') })
+  const JS_DOT = attributesElement.ele('option', { name: 'JS.DOT' }).ele('value')
+  JS_DOT.ele('option', { name: 'FOREGROUND', value: punctuation })
+  const JS_JSDOC_TAG = attributesElement.ele('option', { name: 'JS.DOC_TAG' }).ele('value')
+  JS_JSDOC_TAG.ele('option', { name: 'FOREGROUND', value: danger })
+  for (const name of ['JS.DOC_TAG_NAMEPATH', 'JS.DOC_TAG_VALUE'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: secondaryForeground })
+  const JS_JSX_CLIENT_COMPONENT = attributesElement.ele('option', { name: 'JS.JSX_CLIENT_COMPONENT' }).ele('value')
+  JS_JSX_CLIENT_COMPONENT.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+  const JS_VALID_STRING_ESCAPE = attributesElement.ele('option', { name: 'JS.VALID_STRING_ESCAPE' }).ele('value')
+  JS_VALID_STRING_ESCAPE.ele('option', { name: 'FOREGROUND', value: foreground })
+
+  for (const name of ['JS.ASYNC_AWAIT', 'JS.GET_SET']) {
+    const value = attributesElement.ele('option', { name }).ele('value')
+    value.ele('option', { name: 'FOREGROUND', value: v('keyword') })
+    value.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
+  }
+  for (const name of ['JS.CONSTRUCTOR', 'JS.INLINE'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: functionCall })
+  attributesElement.ele('option', { name: 'JS.LABEL' }).ele('value').ele('option', { name: 'FOREGROUND', value: primary })
+  const JS_DOC_COMMENT = attributesElement.ele('option', { name: 'JS.DOC_COMMENT' }).ele('value')
+  JS_DOC_COMMENT.ele('option', { name: 'FOREGROUND', value: v('comment') })
+  JS_DOC_COMMENT.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
+
+  // Keys below are the exact external names used by WebStorm 2026.2's
+  // JavaScriptHighlighter. Keep punctuation and operators explicit so Vue
+  // embedded expressions do not inherit these colors from Darcula.
+  for (const name of ['JS.OPERATION_SIGN', 'JS.TEMPLATE_LITERAL_PLACEHOLDER_DELIMITERS'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('operator') })
+  for (const name of ['JS.COMMA', 'JS.SEMICOLON'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: punctuation })
+  attributesElement.ele('option', { name: 'JS.INVALID_STRING_ESCAPE' }).ele('value').ele('option', { name: 'FOREGROUND', value: danger })
+  attributesElement.ele('option', { name: 'JS.BADCHARACTER' }).ele('value').ele('option', { name: 'FOREGROUND', value: danger })
+
+  // JavaScript JSX tokens used by Vue render functions and TSX.
+  for (const name of ['JSX_HTML_TAG', 'JSX_TAG'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+  attributesElement.ele('option', { name: 'JSX_ATTRIBUTE' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('property') })
+  attributesElement.ele('option', { name: 'JSX_TEXT' }).ele('value').ele('option', { name: 'FOREGROUND', value: foreground })
+
+  // Exact external names from WebStorm 2026.2 TypeScriptHighlighter and
+  // TypeScriptHighlightDescriptor. VueTSSyntaxHighlighter subclasses this
+  // highlighter, so these keys also control <script setup lang="ts"> blocks.
+  for (const name of ['TS.KEYWORD', 'TS.TYPE_GUARD']) {
+    const value = attributesElement.ele('option', { name }).ele('value')
+    value.ele('option', { name: 'FOREGROUND', value: v('keyword') })
+    value.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
+  }
+  attributesElement.ele('option', { name: 'TS.STRING' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('string') })
+  attributesElement.ele('option', { name: 'TS.NUMBER' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('number') })
+  attributesElement.ele('option', { name: 'TS.REGEXP' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('regex') })
+  for (const name of ['TS.CLASS', 'TS.EXPORTED_CLASS', 'TS.ENUM', 'TS.PRIMITIVE.TYPES', 'TS.TYPE.ALIAS', 'TS.TYPE_PARAMETER'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('type') })
+  attributesElement.ele('option', { name: 'TS.INTERFACE' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('interface') })
+  attributesElement.ele('option', { name: 'TS.DECORATOR' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('decorator') })
+  for (const name of ['TS.GLOBAL_FUNCTION', 'TS.EXPORTED_FUNCTION', 'TS.INSTANCE_MEMBER_FUNCTION', 'TS.LOCAL_FUNCTION', 'TS.STATIC_MEMBER_FUNCTION']) {
+    const color = (isDaylight && ['TS.INSTANCE_MEMBER_FUNCTION', 'TS.STATIC_MEMBER_FUNCTION'].includes(name))
+      ? functionCall
+      : functionDeclaration
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: color })
+  }
+  for (const name of ['TS.GLOBAL_VARIABLE', 'TS.EXPORTED_VARIABLE', 'TS.INSTANCE_MEMBER_VARIABLE', 'TS.STATIC_MEMBER_VARIABLE'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('property') })
+  attributesElement.ele('option', { name: 'TS.LOCAL_VARIABLE' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('variable') })
+  attributesElement.ele('option', { name: 'TS.MODULE_NAME' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('namespace') })
+  const TS_PARAMETER = attributesElement.ele('option', { name: 'TS.PARAMETER' }).ele('value')
+  TS_PARAMETER.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isDaylight) ? v('parameter') : pick({ light: foreground, dark: '#f0d5a8' }) })
+  TS_PARAMETER.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
+  const TS_ENUM_MEMBER = attributesElement.ele('option', { name: 'TS.ENUM_MEMBER' }).ele('value')
+  TS_ENUM_MEMBER.ele('option', { name: 'FOREGROUND', value: v('constant') })
+  TS_ENUM_MEMBER.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
+  for (const name of ['TS.OPERATION_SIGN', 'TS.FUNCTION_ARROW', 'TS.TEMPLATE_LITERAL_PLACEHOLDER_DELIMITERS'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('operator') })
+  for (const name of ['TS.BRACES', 'TS.BRACKETS', 'TS.COMMA', 'TS.DOT', 'TS.PARENTHS', 'TS.SEMICOLON'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: punctuation })
+  attributesElement.ele('option', { name: 'TS.LABEL' }).ele('value').ele('option', { name: 'FOREGROUND', value: primary })
+  attributesElement.ele('option', { name: 'TS.VALID_STRING_ESCAPE' }).ele('value').ele('option', { name: 'FOREGROUND', value: foreground })
+  attributesElement.ele('option', { name: 'TS.INVALID_STRING_ESCAPE' }).ele('value').ele('option', { name: 'FOREGROUND', value: danger })
+  attributesElement.ele('option', { name: 'TS.BADCHARACTER' }).ele('value').ele('option', { name: 'FOREGROUND', value: danger })
+  attributesElement.ele('option', { name: 'TS.DOC_TAG' }).ele('value').ele('option', { name: 'FOREGROUND', value: danger })
+  for (const name of ['TS.DOC_TAG_NAMEPATH', 'TS.DOC_TYPE'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: secondaryForeground })
+  for (const name of ['TS.BLOCK_COMMENT', 'TS.DOC_COMMENT', 'TS.LINE_COMMENT']) {
+    const value = attributesElement.ele('option', { name }).ele('value')
+    value.ele('option', { name: 'FOREGROUND', value: v('comment') })
+    value.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
+  }
+
+  // Keep language built-ins visually distinct from rose keywords.
+  for (const name of ['DEFAULT_PREDEFINED_SYMBOL', 'GO_BUILTIN', 'JS.BUILTIN', 'JS.CONSOLE', 'PY.BUILTIN_NAME']) {
+    const value = attributesElement.ele('option', { name }).ele('value')
+    value.ele('option', { name: 'FOREGROUND', value: v('builtin') })
+    value.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
+  }
+
+  // JSON keys follow the same cyan field/property language as JavaScript and HTML.
+  for (const name of ['JSON.KEYWORD', 'JSON.PROPERTY_KEY'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('property') })
+  attributesElement.ele('option', { name: 'JSON.STRING' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('string') })
+  attributesElement.ele('option', { name: 'JSON.NUMBER' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('number') })
+  for (const name of ['JSON.STRING_KEY'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('property') })
+  for (const name of ['JSON.STRING_VALUE'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('string') })
+  for (const name of ['JSON.BOOLEAN', 'JSON.NULL'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('number') })
 
   //   <option name="CSS.ATTRIBUTE_NAME">
   //   <value>
@@ -523,15 +725,16 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //   </value>
   // </option>
   const CSS_ATTRIBUTE_NAME = attributesElement.ele('option', { name: 'CSS.ATTRIBUTE_NAME' }).ele('value')
-  CSS_ATTRIBUTE_NAME.ele('option', { name: 'FOREGROUND', value: v('variable') })
+  CSS_ATTRIBUTE_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('parameter') : v('property') })
   const CSS_CLASS_NAME = attributesElement.ele('option', { name: 'CSS.CLASS_NAME' }).ele('value')
-  CSS_CLASS_NAME.ele('option', { name: 'FOREGROUND', value: v('variable') })
+  CSS_CLASS_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('function') : v('property') })
   const CSS_FUNCTION = attributesElement.ele('option', { name: 'CSS.FUNCTION' }).ele('value')
-  CSS_FUNCTION.ele('option', { name: 'FOREGROUND', value: v('function') })
+  CSS_FUNCTION.ele('option', { name: 'FOREGROUND', value: functionCall })
   const CSS_PROPERTY_NAME = attributesElement.ele('option', { name: 'CSS.PROPERTY_NAME' }).ele('value')
-  CSS_PROPERTY_NAME.ele('option', { name: 'FOREGROUND', value: v('property') })
+  CSS_PROPERTY_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? foreground : v('property') })
   const CSS_PSEUDO = attributesElement.ele('option', { name: 'CSS.PSEUDO' }).ele('value')
-  CSS_PSEUDO.ele('option', { name: 'FOREGROUND', value: v('variable') })
+  CSS_PSEUDO.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : v('orange') })
+  CSS_PSEUDO.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
 
   //   <option name="CSS.BRACES">
   //   <value>
@@ -555,13 +758,48 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //   </value>
 
   const CSS_BRACES = attributesElement.ele('option', { name: 'CSS.BRACES' }).ele('value')
-  CSS_BRACES.ele('option', { name: 'FOREGROUND', value: v('blue') })
+  CSS_BRACES.ele('option', { name: 'FOREGROUND', value: punctuation })
+  CSS_BRACES.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
   const CSS_BRACKETS = attributesElement.ele('option', { name: 'CSS.BRACKETS' }).ele('value')
-  CSS_BRACKETS.ele('option', { name: 'FOREGROUND', value: v('blue') })
+  CSS_BRACKETS.ele('option', { name: 'FOREGROUND', value: punctuation })
+  CSS_BRACKETS.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
   const CSS_PARENTHS = attributesElement.ele('option', { name: 'CSS.PARENTHESES' }).ele('value')
-  CSS_PARENTHS.ele('option', { name: 'FOREGROUND', value: v('blue') })
+  CSS_PARENTHS.ele('option', { name: 'FOREGROUND', value: punctuation })
+  CSS_PARENTHS.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
   const CSS_COLON = attributesElement.ele('option', { name: 'CSS.COLON' }).ele('value')
   CSS_COLON.ele('option', { name: 'FOREGROUND', value: v('punctuation') })
+  CSS_COLON.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
+
+  const CSS_BAD_CHARACTER = attributesElement.ele('option', { name: 'CSS.BAD_CHARACTER' }).ele('value')
+  CSS_BAD_CHARACTER.ele('option', { name: 'EFFECT_COLOR', value: danger })
+  CSS_BAD_CHARACTER.ele('option', { name: 'EFFECT_TYPE', value: FONT_TYPE.ITALIC })
+  for (const name of ['CSS.COLOR', 'CSS.NUMBER'])
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('number') })
+  const CSS_COMMENT = attributesElement.ele('option', { name: 'CSS.COMMENT' }).ele('value')
+  CSS_COMMENT.ele('option', { name: 'FOREGROUND', value: v('comment') })
+  CSS_COMMENT.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
+  for (const name of ['CSS.COMMA', 'CSS.DOT', 'CSS.SEMICOLON']) {
+    const value = attributesElement.ele('option', { name }).ele('value')
+    value.ele('option', { name: 'FOREGROUND', value: punctuation })
+    value.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
+  }
+  attributesElement.ele('option', { name: 'CSS.HASH' }).ele('value').ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('parameter') : v('property') })
+  const CSS_IDENT = attributesElement.ele('option', { name: 'CSS.IDENT' }).ele('value')
+  CSS_IDENT.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('namespace') : v('orange') })
+  const CSS_KEYWORD = attributesElement.ele('option', { name: 'CSS.KEYWORD' }).ele('value')
+  CSS_KEYWORD.ele('option', { name: 'FOREGROUND', value: danger })
+  const CSS_OPERATORS = attributesElement.ele('option', { name: 'CSS.OPERATORS' }).ele('value')
+  CSS_OPERATORS.ele('option', { name: 'FOREGROUND', value: danger })
+  CSS_OPERATORS.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
+  const CSS_PROPERTY_VALUE = attributesElement.ele('option', { name: 'CSS.PROPERTY_VALUE' }).ele('value')
+  CSS_PROPERTY_VALUE.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : foreground })
+  const CSS_STRING = attributesElement.ele('option', { name: 'CSS.STRING' }).ele('value')
+  CSS_STRING.ele('option', { name: 'FOREGROUND', value: v('string') })
+  const CSS_TAG_NAME = attributesElement.ele('option', { name: 'CSS.TAG_NAME' }).ele('value')
+  CSS_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('keyword') : primary })
+  attributesElement.ele('option', { name: 'CSS.SELECTOR' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('property') })
+  const CSS_UNICODE_RANGE = attributesElement.ele('option', { name: 'CSS.UNICODE.RANGE' }).ele('value')
+  CSS_UNICODE_RANGE.ele('option', { name: 'FOREGROUND', value: v('magenta') })
 
   //   <option name="KOTLIN_MUTABLE_VARIABLE">
   //   <value>
@@ -669,15 +907,15 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           disabledBackground: background,
           inactiveForeground: foreground,
 
-          lightSelectionBackground: activeBackground,
-          hoverBackground: activeBackground,
+          lightSelectionBackground: selectionBackground,
+          hoverBackground: selectionBackground,
 
           selectionForeground: foreground,
-          selectionBackground,
+          selectionBackground: selectionBackgroundActive,
           selectionInactiveForeground: foreground,
-          selectionInactiveBackground: selectionBackground,
+          selectionInactiveBackground: selectionBackgroundInActive,
 
-          focusColor: v('primary', '80'),
+          focusColor: v('secondary', '80'),
 
           infoForeground: v('comment'),
 
@@ -692,8 +930,8 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           'borderWidth': 6,
           'borderWidth.compact': 4,
           'borderColor': background,
-          'inactiveAlpha': 0.56,
-          'toolWindowAlpha': 0.2,
+          'inactiveAlpha': 1,
+          'toolWindowAlpha': 1,
         },
         'MainWindow': {
           background: mainWindowBackground,
@@ -710,6 +948,9 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
         },
         'Component': {
           borderColor: pick({ light: colors.gray[3], dark: colors.gray[1] }),
+          focusColor: secondary,
+          errorFocusColor: danger,
+          warningFocusColor: warning,
         },
         'Button': {
           foreground,
@@ -728,14 +969,29 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           },
         },
         'Link': {
-          activeForeground: primary,
-          hoverForeground: primary,
-          pressedForeground: primary,
-          visitedForeground: primary,
+          activeForeground: info,
+          hoverForeground: secondary,
+          pressedForeground: info,
+          visitedForeground: tertiary,
           secondaryForeground,
         },
         'Notification': {
-          linkForeground: primary,
+          linkForeground: info,
+        },
+        'Banner': {
+          errorBackground: errorSurface,
+          errorBorderColor: danger,
+          errorForeground: foreground,
+          informativeBackground: infoSurface,
+          informativeBorderColor: info,
+          informativeForeground: foreground,
+          warningBackground: warningSurface,
+          warningBorderColor: warning,
+          warningForeground: foreground,
+        },
+        'ActionButton': {
+          hoverBackground: selectionBackground,
+          pressedBackground: selectionBackgroundActive,
         },
         'GotItTooltip': {
           linkForeground: primary,
@@ -748,14 +1004,14 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           },
         },
         'ToolTip': {
-          background,
+          background: elevatedBackground,
           borderColor: border,
           foreground,
           infoForeground: foreground,
           shortcutForeground: foreground,
         },
         'Tooltip.Learning': {
-          background,
+          background: elevatedBackground,
           borderColor: border,
           spanBackground: background,
           spanForeground: foreground,
@@ -766,12 +1022,12 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           background,
           borderColor: transparentBackground,
           Header: {
-            background,
+            background: activeBackground,
             inactiveBackground: background,
           },
           Button: {
             selectedForeground: foreground,
-            selectedBackground: activeBackground,
+            selectedBackground: selectionBackgroundActive,
           },
           Stripe: {
             background: mainWindowBackground,
@@ -784,23 +1040,24 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           hoverInactiveBackground: selectionBackgroundInActive,
           underTabsBorderColor: transparentBackground,
           underlinedBorderColor: primary,
-          underlinedTabBackground: activeBackground,
+          underlinedTabBackground: selectionBackgroundActive,
           inactiveUnderlinedTabBorderColor: v('primary', '80'),
-          inactiveUnderlinedTabBackground: activeBackground,
+          inactiveUnderlinedTabBackground: selectionBackgroundInActive,
         },
         'CompletionPopup': {
+          background: elevatedBackground,
           foreground,
           matchForeground: foreground,
-          selectionBackground: activeBackground,
+          selectionBackground: selectionBackgroundActive,
           Advertiser: {
             foreground,
-            background,
+            background: elevatedBackground,
           },
         },
         'ParameterInfo': {
-          background,
+          background: elevatedBackground,
           foreground,
-          currentOverloadBackground: background,
+          currentOverloadBackground: selectionBackground,
           currentParameterForeground: foreground,
         },
         // 'SearchOption': {
@@ -809,7 +1066,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
         //   selectedPressedBackground: selectionBackgroundInActive,
         // },
         'SpeedSearch': {
-          background,
+          background: elevatedBackground,
           foreground,
           borderColor: border,
         },
@@ -819,19 +1076,25 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
         },
         'SearchEverywhere': {
           Tab: {
-            selectedBackground: activeBackground,
+            selectedBackground: selectionBackgroundActive,
             selectedForeground: foreground,
           },
         },
         'ProgressBar': {
           progressColor: primary,
-          indeterminateStartColor: v('primary', '80'),
-          indeterminateEndColor: v('primary', '40'),
-          // passedColor: 'Green5',
-          // passedEndColor: 'Green8',
-          // failedColor: 'Red5',
-          // failedEndColor: 'Red8',
+          indeterminateStartColor: primary,
+          indeterminateEndColor: secondary,
+          passedColor: success,
+          passedEndColor: primary,
+          failedColor: danger,
+          failedEndColor: v('orange'),
           trackColor: selectionBackground,
+        },
+        'RunWidget': {
+          activeBackground: successSurface,
+          activeForeground: success,
+          hoverBackground: selectionBackground,
+          pressedBackground: selectionBackgroundActive,
         },
         'Panel': {
           foreground,
@@ -840,29 +1103,51 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
         'Tree': {
           background,
           foreground,
-          selectionBackground: activeBackground,
+          hoverBackground: selectionBackground,
+          hoverInactiveBackground: selectionBackgroundInActive,
+          selectionBackground: selectionBackgroundActive,
           selectionForeground: foreground,
+          errorForeground: danger,
+        },
+        'List': {
+          background,
+          foreground,
+          selectionBackground: selectionBackgroundActive,
+          selectionForeground: foreground,
+          selectionInactiveBackground: selectionBackgroundInActive,
+          selectionInactiveForeground: foreground,
         },
         // 'MainMenu': {
         //   selectionForeground: foreground,
         //   selectionBackground: activeBackground,
         // },
         'Menu': {
+          background: elevatedBackground,
           separatorColor: border,
         },
         'MenuItem': {
-          background,
+          background: elevatedBackground,
           foreground,
-          selectionBackground,
+          selectionBackground: selectionBackgroundActive,
           selectionForeground: foreground,
+        },
+        'PopupMenu': {
+          background: elevatedBackground,
+        },
+        'Popup': {
+          background: elevatedBackground,
+          borderColor: border,
+          Header: {
+            activeBackground: elevatedBackground,
+          },
         },
         'CheckBox': {
           background,
         },
         'CheckBoxMenuItem': {
-          background,
+          background: elevatedBackground,
           foreground,
-          selectionBackground: activeBackground,
+          selectionBackground: selectionBackgroundActive,
           selectionForeground: foreground,
         },
         'Editor': {
@@ -872,13 +1157,13 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
         },
         'ColorChooser': {
           foreground,
-          background,
+          background: elevatedBackground,
         },
         'ComboBox': {
           foreground,
-          background,
+          background: activeBackground,
           selectionForeground: foreground,
-          selectionBackground: activeBackground,
+          selectionBackground: selectionBackgroundActive,
           nonEditableBackground: background,
           modifiedItemForeground: primary,
           ArrowButton: {
@@ -888,13 +1173,17 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           },
         },
         'FileColor': {
-          Yellow: background,
-          Green: v('green', '10'),
-        // Blue: '#00004D',
-        // Violet: '#471747',
-        // Orange: '#733000',
-        // Rose: '#4D0F22',
-        // Gray: '#062329',
+          Yellow: warningSurface,
+          Green: successSurface,
+          Blue: infoSurface,
+          Violet: violetSurface,
+          Orange: v('orange', '24'),
+          Rose: v('magenta', '24'),
+          Gray: pick({ light: '#6a737d1a', dark: '#dedcd51a' }),
+        },
+        'Bookmark': {
+          mnemonicForeground: tertiary,
+          mnemonicBackground: violetSurface,
         },
         'icons': {
           ColorPalette: {
@@ -903,7 +1192,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
             'Actions.Yellow': v('yellow'),
             'Actions.Green': v('green'),
             'Actions.Blue': v('blue'),
-            // 'Actions.GreyInline.Dark': '#9f99bfb3',
+            'Actions.Purple': v('violet'),
 
             // 'Objects.Grey': '#9790ad',
             // 'Objects.RedStatus': '#dd3962',
@@ -912,17 +1201,17 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
             'Objects.Yellow': v('yellow'),
             'Objects.Green': v('green'),
             'Objects.Blue': v('blue'),
-            // 'Objects.Purple': '#af71e0',
-            // 'Objects.BlackText': '#000000ff',
-            // 'Objects.YellowDark': '#988c26',
-            // 'Objects.GreenAndroid': '#78c257',
+            'Objects.Purple': v('violet'),
+            'Objects.BlackText': foreground,
+            'Objects.YellowDark': v('orange'),
+            'Objects.GreenAndroid': success,
 
             [`Checkbox.Background.Default${options.color === 'dark' ? '.Dark' : ''}`]: background,
             [`Checkbox.Border.Default${options.color === 'dark' ? '.Dark' : ''}`]: pick({ light: colors.gray[3], dark: colors.gray[1] }),
             [`Checkbox.Foreground.Selected${options.color === 'dark' ? '.Dark' : ''}`]: foreground,
-            [`Checkbox.Focus.Wide${options.color === 'dark' ? '.Dark' : ''}`]: v('primary', '80'),
-            [`Checkbox.Focus.Thin.Default${options.color === 'dark' ? '.Dark' : ''}`]: primary,
-            [`Checkbox.Focus.Thin.Selected${options.color === 'dark' ? '.Dark' : ''}`]: primary,
+            [`Checkbox.Focus.Wide${options.color === 'dark' ? '.Dark' : ''}`]: v('secondary', '80'),
+            [`Checkbox.Focus.Thin.Default${options.color === 'dark' ? '.Dark' : ''}`]: secondary,
+            [`Checkbox.Focus.Thin.Selected${options.color === 'dark' ? '.Dark' : ''}`]: secondary,
             [`Checkbox.Background.Disabled${options.color === 'dark' ? '.Dark' : ''}`]: v('comment'),
             [`Checkbox.Border.Disabled${options.color === 'dark' ? '.Dark' : ''}`]: pick({ light: colors.gray[3], dark: colors.gray[1] }),
             [`Checkbox.Foreground.Disabled${options.color === 'dark' ? '.Dark' : ''}`]: foreground,
