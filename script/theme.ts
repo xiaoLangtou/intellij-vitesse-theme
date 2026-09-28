@@ -6,6 +6,8 @@ import { FONT_TYPE } from './constant'
 
 export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const isDaylight = options.daylight || options.daylightWhite
+  const isNocturne = options.nocturne === true
+  const usesSplitFunctions = isDaylight || isNocturne
 
   // Usage: `pick({ light: "lightblue", dark: "darkblue" })`
   const {
@@ -15,6 +17,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   } = createThemeHelpers(options)
 
   const foreground = v('foreground')
+  const syntaxForeground = isNocturne ? v('syntaxForeground') : foreground
   const secondaryForeground = v('secondaryForeground')
   const activeForeground = v('activeForeground')
   const primary = v('primary')
@@ -24,8 +27,8 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const info = v('blue')
   const warning = v('yellow')
   const danger = v('red')
-  const functionDeclaration = isDaylight ? v('functionDeclaration') : v('function')
-  const functionCall = isDaylight ? v('functionCall') : v('function')
+  const functionDeclaration = usesSplitFunctions ? v('functionDeclaration') : v('function')
+  const functionCall = usesSplitFunctions ? v('functionCall') : v('function')
 
   const border = v('border')
   const background = v('background')
@@ -45,7 +48,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const errorSurface = v('errorSurface')
   const violetSurface = v('violetSurface')
 
-  const selectionBackground2 = isDaylight ? selectionBackgroundActive : pick({ light: '#d3d3d3', dark: '#313d58' })
+  const selectionBackground2 = (isDaylight || isNocturne) ? selectionBackgroundActive : pick({ light: '#d3d3d3', dark: '#313d58' })
 
   // root element
   const theme = builder.create('scheme', { encoding: 'utf-8' })
@@ -97,16 +100,18 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   WHITESPACES_MODIFIED_LINES_COLOR: 表示版本控制中修改后的空格和制表符的颜色
   **/
   const colorsElement = theme.ele('colors')
-  const htmlTagTreeColors = options.spectrum
-    ? ['#ff6b9a', '#62dff0', '#7fe29a', '#ff9d66', '#a99af4', '#ffe66d']
-    : [
-        pick({ light: colors.orange[5], dark: '#ffd166' }),
-        pick({ light: colors.pink[5], dark: '#ff7eb6' }),
-        pick({ light: colors.green[5], dark: '#5be7b0' }),
-        pick({ light: colors.blue[5], dark: '#79c0ff' }),
-        pick({ light: colors.purple[5], dark: '#c6a0ff' }),
-        pick({ light: colors.red[5], dark: '#ff7b72' }),
-      ]
+  const htmlTagTreeColors = isNocturne
+    ? [v('tag'), v('type'), v('string'), v('namespace'), v('keyword'), v('number')]
+    : options.spectrum
+      ? ['#ff6b9a', '#62dff0', '#7fe29a', '#ff9d66', '#a99af4', '#ffe66d']
+      : [
+          pick({ light: colors.orange[5], dark: '#ffd166' }),
+          pick({ light: colors.pink[5], dark: '#ff7eb6' }),
+          pick({ light: colors.green[5], dark: '#5be7b0' }),
+          pick({ light: colors.blue[5], dark: '#79c0ff' }),
+          pick({ light: colors.purple[5], dark: '#c6a0ff' }),
+          pick({ light: colors.red[5], dark: '#ff7b72' }),
+        ]
   htmlTagTreeColors.forEach((value, index) => {
     colorsElement.ele('option', { name: `HTML_TAG_TREE_LEVEL${index}`, value })
   })
@@ -122,7 +127,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   colorsElement.ele('option', { name: 'FILESTATUS_IDEA_FILESTATUS_IGNORED', value: v('ignored') })
   colorsElement.ele('option', { name: 'ANNOTATIONS_COLOR', value: v('comment') })
   colorsElement.ele('option', { name: 'ANNOTATIONS_LAST_COMMIT_COLOR', value: v('comment') })
-  colorsElement.ele('option', { name: 'CARET_COLOR', value: pick({ light: '#000000', dark: '#aeafad' }) })
+  colorsElement.ele('option', { name: 'CARET_COLOR', value: isNocturne ? primary : pick({ light: '#000000', dark: '#aeafad' }) })
   colorsElement.ele('option', { name: 'CARET_ROW_COLOR', value: activeBackground })
   colorsElement.ele('option', { name: 'CONSOLE_BACKGROUND_KEY', value: background })
   colorsElement.ele('option', { name: 'DELETED_LINES_COLOR', value: v('red') })
@@ -135,7 +140,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   colorsElement.ele('option', { name: 'IGNORED_ADDED_LINES_BORDER_COLOR', value: v('green') })
   colorsElement.ele('option', { name: 'IGNORED_DELETED_LINES_BORDER_COLOR', value: v('red') })
   colorsElement.ele('option', { name: 'IGNORED_MODIFIED_LINES_BORDER_COLOR', value: v('blue') })
-  colorsElement.ele('option', { name: 'INDENT_GUIDE', value: pick({ light: colors.gray[2], dark: colors.gray[1] }) })
+  colorsElement.ele('option', { name: 'INDENT_GUIDE', value: isNocturne ? border : pick({ light: colors.gray[2], dark: colors.gray[1] }) })
   colorsElement.ele('option', { name: 'INFORMATION_HINT', value: background })
   colorsElement.ele('option', { name: 'INLINE_REFACTORING_SETTINGS_DEFAULT', value: v('primary') })
   colorsElement.ele('option', { name: 'INLINE_REFACTORING_SETTINGS_FOCUSED', value: v('primary') })
@@ -143,7 +148,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   colorsElement.ele('option', { name: 'LINE_NUMBERS_COLOR', value: v('ignored') })
   colorsElement.ele('option', { name: 'LINE_NUMBER_ON_CARET_ROW_COLOR', value: activeForeground })
   colorsElement.ele('option', { name: 'LOOKUP_COLOR', value: background })
-  colorsElement.ele('option', { name: 'METHOD_SEPARATORS_COLOR', value: colors.gray[3] })
+  colorsElement.ele('option', { name: 'METHOD_SEPARATORS_COLOR', value: isNocturne ? border : colors.gray[3] })
   colorsElement.ele('option', { name: 'MODIFIED_LINES_COLOR', value: v('blue') })
   colorsElement.ele('option', { name: 'NOTIFICATION_BACKGROUND', value: activeBackground })
   colorsElement.ele('option', { name: 'PROMOTION_PANE', value: activeBackground })
@@ -165,7 +170,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   // attributes
   const attributesElement = theme.ele('attributes')
   const TEXT = attributesElement.ele('option', { name: 'TEXT' }).ele('value')
-  TEXT.ele('option', { name: 'FOREGROUND', value: foreground })
+  TEXT.ele('option', { name: 'FOREGROUND', value: syntaxForeground })
   TEXT.ele('option', { name: 'BACKGROUND', value: background })
 
   //   <option name="ERRORS_ATTRIBUTES">
@@ -176,8 +181,8 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //   </value>
   // </option>
   const ERRORS_ATTRIBUTES = attributesElement.ele('option', { name: 'ERRORS_ATTRIBUTES' }).ele('value')
-  ERRORS_ATTRIBUTES.ele('option', { name: 'EFFECT_COLOR', value: pick({ light: colors.red[5], dark: colors.red[4] }) })
-  ERRORS_ATTRIBUTES.ele('option', { name: 'ERROR_STRIPE_COLOR', value: pick({ light: colors.red[5], dark: colors.red[4] }) })
+  ERRORS_ATTRIBUTES.ele('option', { name: 'EFFECT_COLOR', value: isNocturne ? danger : pick({ light: colors.red[5], dark: colors.red[4] }) })
+  ERRORS_ATTRIBUTES.ele('option', { name: 'ERROR_STRIPE_COLOR', value: isNocturne ? danger : pick({ light: colors.red[5], dark: colors.red[4] }) })
   ERRORS_ATTRIBUTES.ele('option', { name: 'EFFECT_TYPE', value: '2' })
   //   <option name="WRONG_REFERENCES_ATTRIBUTES">
   //   <value>
@@ -185,7 +190,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //   </value>
   // </option>
   const WRONG_REFERENCES_ATTRIBUTES = attributesElement.ele('option', { name: 'WRONG_REFERENCES_ATTRIBUTES' }).ele('value')
-  WRONG_REFERENCES_ATTRIBUTES.ele('option', { name: 'FOREGROUND', value: pick({ light: colors.red[5], dark: colors.red[4] }) })
+  WRONG_REFERENCES_ATTRIBUTES.ele('option', { name: 'FOREGROUND', value: isNocturne ? danger : pick({ light: colors.red[5], dark: colors.red[4] }) })
 
   attributesElement.ele('option', { name: 'ANNOTATION_ATTRIBUTE_NAME_ATTRIBUTES' }).ele('value')
   // ANNOTATION_NAME_ATTRIBUTES: 表示注释名称的属性
@@ -253,7 +258,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //      ^   ^
   const DEFAULT_TAG = attributesElement.ele('option', { name: 'DEFAULT_TAG' }).ele('value')
   DEFAULT_TAG.ele('option', { name: 'BACKGROUND', value: background })
-  DEFAULT_TAG.ele('option', { name: 'FOREGROUND', value: primary })
+  DEFAULT_TAG.ele('option', { name: 'FOREGROUND', value: isNocturne ? v('tag') : primary })
 
   // eg: class A{}
   //           ^
@@ -289,7 +294,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   attributesElement.ele('option', { name: 'DEFAULT_STRING' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('string') })
 
   // 标识符
-  attributesElement.ele('option', { name: 'DEFAULT_IDENTIFIER' }).ele('value').ele('option', { name: 'FOREGROUND', value: foreground })
+  attributesElement.ele('option', { name: 'DEFAULT_IDENTIFIER' }).ele('value').ele('option', { name: 'FOREGROUND', value: syntaxForeground })
 
   // var a = 1
   //     ^
@@ -308,7 +313,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   DEFAULT_VALID_STRING_ESCAPE.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
 
   const DEFAULT_ENTITY = attributesElement.ele('option', { name: 'DEFAULT_ENTITY' }).ele('value')
-  DEFAULT_ENTITY.ele('option', { name: 'FOREGROUND', value: primary })
+  DEFAULT_ENTITY.ele('option', { name: 'FOREGROUND', value: isNocturne ? v('constant') : primary })
   DEFAULT_ENTITY.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
 
   // eg: const a = new A() a.foo
@@ -338,7 +343,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   DEFAULT_ATTRIBUTE.ele('option', { name: 'FOREGROUND', value: v('property') })
 
   const TEXT_SEARCH_RESULT_ATTRIBUTES = attributesElement.ele('option', { name: 'TEXT_SEARCH_RESULT_ATTRIBUTES' }).ele('value')
-  TEXT_SEARCH_RESULT_ATTRIBUTES.ele('option', { name: 'BACKGROUND', value: pick({ light: '#e6cc7766', dark: '#e6cc7744' }) })
+  TEXT_SEARCH_RESULT_ATTRIBUTES.ele('option', { name: 'BACKGROUND', value: isNocturne ? warningSurface : pick({ light: '#e6cc7766', dark: '#e6cc7744' }) })
   // TEXT_SEARCH_RESULT_ATTRIBUTES.ele('option', { name: 'FOREGROUND', value: foreground })
 
   const DEFAULT_LABEL = attributesElement.ele('option', { name: 'DEFAULT_LABEL' }).ele('value')
@@ -363,7 +368,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const DEFAULT_LOCAL_VARIABLE = attributesElement.ele('option', { name: 'DEFAULT_LOCAL_VARIABLE' }).ele('value')
   DEFAULT_LOCAL_VARIABLE.ele('option', { name: 'FOREGROUND', value: v('variable') })
   const DEFAULT_PARAMETER = attributesElement.ele('option', { name: 'DEFAULT_PARAMETER' }).ele('value')
-  DEFAULT_PARAMETER.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isDaylight) ? v('parameter') : pick({ light: v('variable'), dark: '#f0d5a8' }) })
+  DEFAULT_PARAMETER.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isDaylight || isNocturne) ? v('parameter') : pick({ light: v('variable'), dark: '#f0d5a8' }) })
   DEFAULT_PARAMETER.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
 
   attributesElement.ele('option', { name: 'DEFAULT_REASSIGNED_LOCAL_VARIABLE', baseAttributes: 'DEFAULT_LOCAL_VARIABLE' })
@@ -395,22 +400,22 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   HTML_ATTRIBUTE_VALUE.ele('option', { name: 'FOREGROUND', value: v('string') })
 
   const HTML_TAG = attributesElement.ele('option', { name: 'HTML_TAG' }).ele('value')
-  HTML_TAG.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
+  HTML_TAG.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? punctuation : primary })
   HTML_TAG.ele('option', { name: 'BACKGROUND', value: background })
 
   const HTML_TAG_NAME = attributesElement.ele('option', { name: 'HTML_TAG_NAME' }).ele('value')
-  HTML_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('keyword') : primary })
+  HTML_TAG_NAME.ele('option', { name: 'FOREGROUND', value: isNocturne ? v('tag') : options.spectrum ? v('keyword') : primary })
   HTML_TAG_NAME.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
   const HTML_CUSTOM_TAG_NAME = attributesElement.ele('option', { name: 'HTML_CUSTOM_TAG_NAME' }).ele('value')
-  HTML_CUSTOM_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+  HTML_CUSTOM_TAG_NAME.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? v('type') : primary })
   const HTML_ENTITY_REFERENCE = attributesElement.ele('option', { name: 'HTML_ENTITY_REFERENCE' }).ele('value')
   HTML_ENTITY_REFERENCE.ele('option', { name: 'FOREGROUND', value: danger })
-  attributesElement.ele('option', { name: 'HTML_CODE' }).ele('value').ele('option', { name: 'FOREGROUND', value: foreground })
+  attributesElement.ele('option', { name: 'HTML_CODE' }).ele('value').ele('option', { name: 'FOREGROUND', value: syntaxForeground })
   const HTML_COMMENT = attributesElement.ele('option', { name: 'HTML_COMMENT' }).ele('value')
   HTML_COMMENT.ele('option', { name: 'FOREGROUND', value: v('comment') })
   HTML_COMMENT.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
   const VUE_TAG_NAME = attributesElement.ele('option', { name: 'VUE_TAG_NAME' }).ele('value')
-  VUE_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+  VUE_TAG_NAME.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? v('type') : primary })
   VUE_TAG_NAME.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
 
   const XML_ATTRIBUTE_NAME = attributesElement.ele('option', { name: 'XML_ATTRIBUTE_NAME' }).ele('value')
@@ -424,7 +429,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //   </value>
   // </option>
   const XML_TAG = attributesElement.ele('option', { name: 'XML_TAG' }).ele('value')
-  XML_TAG.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
+  XML_TAG.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? punctuation : primary })
   XML_TAG.ele('option', { name: 'BACKGROUND', value: background })
   // <option name="XML_TAG_NAME">
   //   <value>
@@ -432,15 +437,15 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //   </value>
   // </option>
   const XML_TAG_NAME = attributesElement.ele('option', { name: 'XML_TAG_NAME' }).ele('value')
-  XML_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('keyword') : primary })
+  XML_TAG_NAME.ele('option', { name: 'FOREGROUND', value: isNocturne ? v('tag') : options.spectrum ? v('keyword') : primary })
   const XML_CUSTOM_TAG_NAME = attributesElement.ele('option', { name: 'XML_CUSTOM_TAG_NAME' }).ele('value')
-  XML_CUSTOM_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+  XML_CUSTOM_TAG_NAME.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? v('type') : primary })
   const XML_ENTITY_REFERENCE = attributesElement.ele('option', { name: 'XML_ENTITY_REFERENCE' }).ele('value')
   XML_ENTITY_REFERENCE.ele('option', { name: 'FOREGROUND', value: danger })
   const XML_NS_PREFIX = attributesElement.ele('option', { name: 'XML_NS_PREFIX' }).ele('value')
   XML_NS_PREFIX.ele('option', { name: 'FOREGROUND', value: v('orange') })
   const XML_PROLOGUE = attributesElement.ele('option', { name: 'XML_PROLOGUE' }).ele('value')
-  XML_PROLOGUE.ele('option', { name: 'FOREGROUND', value: foreground })
+  XML_PROLOGUE.ele('option', { name: 'FOREGROUND', value: syntaxForeground })
   XML_PROLOGUE.ele('option', { name: 'BACKGROUND', value: background })
 
   // <option name="JS.GLOBAL_FUNCTION" baseAttributes="DEFAULT_FUNCTION_DECLARATION" />
@@ -448,7 +453,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   // <option name="JS.LOCAL_VARIABLE" baseAttributes="DEFAULT_LOCAL_VARIABLE" />
   attributesElement.ele('option', { name: 'JS.GLOBAL_FUNCTION', baseAttributes: 'DEFAULT_FUNCTION_DECLARATION' })
   const JS_GLOBAL_VARIABLE = attributesElement.ele('option', { name: 'JS.GLOBAL_VARIABLE' }).ele('value')
-  JS_GLOBAL_VARIABLE.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('namespace') : v('property') })
+  JS_GLOBAL_VARIABLE.ele('option', { name: 'FOREGROUND', value: isNocturne ? v('variable') : options.spectrum ? v('namespace') : v('property') })
   const JS_LOCAL_VARIABLE = attributesElement.ele('option', { name: 'JS.LOCAL_VARIABLE' }).ele('value')
   JS_LOCAL_VARIABLE.ele('option', { name: 'FOREGROUND', value: v('variable') })
 
@@ -470,7 +475,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   // <option name="JS.INSTANCE_MEMBER_FUNCTION" baseAttributes="DEFAULT_INSTANCE_METHOD" />
 
   const JS_MODULE_NAME = attributesElement.ele('option', { name: 'JS.MODULE_NAME' }).ele('value')
-  JS_MODULE_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('namespace') : foreground })
+  JS_MODULE_NAME.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? v('namespace') : foreground })
   const JS_PRIMITIVE_TYPE = attributesElement.ele('option', { name: 'JS.PRIMITIVE.TYPE' }).ele('value')
   JS_PRIMITIVE_TYPE.ele('option', { name: 'FOREGROUND', value: v('type') })
   const JS_TYPE_ALIAS = attributesElement.ele('option', { name: 'JS.TYPE_ALIAS' }).ele('value')
@@ -545,16 +550,16 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   //     </value>
   //   </option>
   const JS_BRACES = attributesElement.ele('option', { name: 'JS.BRACES' }).ele('value')
-  JS_BRACES.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
+  JS_BRACES.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? punctuation : primary })
   const JS_BRACKETS = attributesElement.ele('option', { name: 'JS.BRACKETS' }).ele('value')
-  JS_BRACKETS.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
+  JS_BRACKETS.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? punctuation : primary })
   const JS_PARENTHS = attributesElement.ele('option', { name: 'JS.PARENTHS' }).ele('value')
-  JS_PARENTHS.ele('option', { name: 'FOREGROUND', value: options.spectrum ? punctuation : primary })
+  JS_PARENTHS.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? punctuation : primary })
   const JS_KEYWORD = attributesElement.ele('option', { name: 'JS.KEYWORD' }).ele('value')
   JS_KEYWORD.ele('option', { name: 'FOREGROUND', value: v('keyword') })
   JS_KEYWORD.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
   const JS_PARAMETER = attributesElement.ele('option', { name: 'JS.PARAMETER' }).ele('value')
-  JS_PARAMETER.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isDaylight) ? v('parameter') : pick({ light: foreground, dark: '#f0d5a8' }) })
+  JS_PARAMETER.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isDaylight || isNocturne) ? v('parameter') : pick({ light: foreground, dark: '#f0d5a8' }) })
   JS_PARAMETER.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
   /**
    *     <option name="JS.REGEXP">
@@ -583,7 +588,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
 
   const JS_ATTRIBUTE = attributesElement.ele('option', { name: 'JS.ATTRIBUTE' }).ele('value')
   JS_ATTRIBUTE.ele('option', { name: 'FOREGROUND', value: v('property') })
-  JS_ATTRIBUTE.ele('option', { name: 'BACKGROUND', value: pick({ light: '#fff0f0', dark: '#382832' }) })
+  JS_ATTRIBUTE.ele('option', { name: 'BACKGROUND', value: isNocturne ? activeBackground : pick({ light: '#fff0f0', dark: '#382832' }) })
   for (const name of ['JS.CLASS', 'JS.EXPORTED.CLASS'])
     attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: v('class') })
   attributesElement.ele('option', { name: 'JS.INTERFACE' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('interface') })
@@ -599,9 +604,9 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   for (const name of ['JS.DOC_TAG_NAMEPATH', 'JS.DOC_TAG_VALUE'])
     attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: secondaryForeground })
   const JS_JSX_CLIENT_COMPONENT = attributesElement.ele('option', { name: 'JS.JSX_CLIENT_COMPONENT' }).ele('value')
-  JS_JSX_CLIENT_COMPONENT.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+  JS_JSX_CLIENT_COMPONENT.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? v('type') : primary })
   const JS_VALID_STRING_ESCAPE = attributesElement.ele('option', { name: 'JS.VALID_STRING_ESCAPE' }).ele('value')
-  JS_VALID_STRING_ESCAPE.ele('option', { name: 'FOREGROUND', value: foreground })
+  JS_VALID_STRING_ESCAPE.ele('option', { name: 'FOREGROUND', value: syntaxForeground })
 
   for (const name of ['JS.ASYNC_AWAIT', 'JS.GET_SET']) {
     const value = attributesElement.ele('option', { name }).ele('value')
@@ -627,9 +632,9 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
 
   // JavaScript JSX tokens used by Vue render functions and TSX.
   for (const name of ['JSX_HTML_TAG', 'JSX_TAG'])
-    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : primary })
+    attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? v('type') : primary })
   attributesElement.ele('option', { name: 'JSX_ATTRIBUTE' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('property') })
-  attributesElement.ele('option', { name: 'JSX_TEXT' }).ele('value').ele('option', { name: 'FOREGROUND', value: foreground })
+  attributesElement.ele('option', { name: 'JSX_TEXT' }).ele('value').ele('option', { name: 'FOREGROUND', value: syntaxForeground })
 
   // Exact external names from WebStorm 2026.2 TypeScriptHighlighter and
   // TypeScriptHighlightDescriptor. VueTSSyntaxHighlighter subclasses this
@@ -647,7 +652,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   attributesElement.ele('option', { name: 'TS.INTERFACE' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('interface') })
   attributesElement.ele('option', { name: 'TS.DECORATOR' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('decorator') })
   for (const name of ['TS.GLOBAL_FUNCTION', 'TS.EXPORTED_FUNCTION', 'TS.INSTANCE_MEMBER_FUNCTION', 'TS.LOCAL_FUNCTION', 'TS.STATIC_MEMBER_FUNCTION']) {
-    const color = (isDaylight && ['TS.INSTANCE_MEMBER_FUNCTION', 'TS.STATIC_MEMBER_FUNCTION'].includes(name))
+    const color = (usesSplitFunctions && ['TS.INSTANCE_MEMBER_FUNCTION', 'TS.STATIC_MEMBER_FUNCTION'].includes(name))
       ? functionCall
       : functionDeclaration
     attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: color })
@@ -657,7 +662,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   attributesElement.ele('option', { name: 'TS.LOCAL_VARIABLE' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('variable') })
   attributesElement.ele('option', { name: 'TS.MODULE_NAME' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('namespace') })
   const TS_PARAMETER = attributesElement.ele('option', { name: 'TS.PARAMETER' }).ele('value')
-  TS_PARAMETER.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isDaylight) ? v('parameter') : pick({ light: foreground, dark: '#f0d5a8' }) })
+  TS_PARAMETER.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isDaylight || isNocturne) ? v('parameter') : pick({ light: foreground, dark: '#f0d5a8' }) })
   TS_PARAMETER.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.ITALIC })
   const TS_ENUM_MEMBER = attributesElement.ele('option', { name: 'TS.ENUM_MEMBER' }).ele('value')
   TS_ENUM_MEMBER.ele('option', { name: 'FOREGROUND', value: v('constant') })
@@ -667,7 +672,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   for (const name of ['TS.BRACES', 'TS.BRACKETS', 'TS.COMMA', 'TS.DOT', 'TS.PARENTHS', 'TS.SEMICOLON'])
     attributesElement.ele('option', { name }).ele('value').ele('option', { name: 'FOREGROUND', value: punctuation })
   attributesElement.ele('option', { name: 'TS.LABEL' }).ele('value').ele('option', { name: 'FOREGROUND', value: primary })
-  attributesElement.ele('option', { name: 'TS.VALID_STRING_ESCAPE' }).ele('value').ele('option', { name: 'FOREGROUND', value: foreground })
+  attributesElement.ele('option', { name: 'TS.VALID_STRING_ESCAPE' }).ele('value').ele('option', { name: 'FOREGROUND', value: syntaxForeground })
   attributesElement.ele('option', { name: 'TS.INVALID_STRING_ESCAPE' }).ele('value').ele('option', { name: 'FOREGROUND', value: danger })
   attributesElement.ele('option', { name: 'TS.BADCHARACTER' }).ele('value').ele('option', { name: 'FOREGROUND', value: danger })
   attributesElement.ele('option', { name: 'TS.DOC_TAG' }).ele('value').ele('option', { name: 'FOREGROUND', value: danger })
@@ -787,16 +792,16 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   const CSS_IDENT = attributesElement.ele('option', { name: 'CSS.IDENT' }).ele('value')
   CSS_IDENT.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('namespace') : v('orange') })
   const CSS_KEYWORD = attributesElement.ele('option', { name: 'CSS.KEYWORD' }).ele('value')
-  CSS_KEYWORD.ele('option', { name: 'FOREGROUND', value: danger })
+  CSS_KEYWORD.ele('option', { name: 'FOREGROUND', value: isNocturne ? v('keyword') : danger })
   const CSS_OPERATORS = attributesElement.ele('option', { name: 'CSS.OPERATORS' }).ele('value')
-  CSS_OPERATORS.ele('option', { name: 'FOREGROUND', value: danger })
+  CSS_OPERATORS.ele('option', { name: 'FOREGROUND', value: isNocturne ? v('operator') : danger })
   CSS_OPERATORS.ele('option', { name: 'FONT_TYPE', value: FONT_TYPE.BOLD })
   const CSS_PROPERTY_VALUE = attributesElement.ele('option', { name: 'CSS.PROPERTY_VALUE' }).ele('value')
-  CSS_PROPERTY_VALUE.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('type') : foreground })
+  CSS_PROPERTY_VALUE.ele('option', { name: 'FOREGROUND', value: (options.spectrum || isNocturne) ? v('type') : foreground })
   const CSS_STRING = attributesElement.ele('option', { name: 'CSS.STRING' }).ele('value')
   CSS_STRING.ele('option', { name: 'FOREGROUND', value: v('string') })
   const CSS_TAG_NAME = attributesElement.ele('option', { name: 'CSS.TAG_NAME' }).ele('value')
-  CSS_TAG_NAME.ele('option', { name: 'FOREGROUND', value: options.spectrum ? v('keyword') : primary })
+  CSS_TAG_NAME.ele('option', { name: 'FOREGROUND', value: isNocturne ? v('tag') : options.spectrum ? v('keyword') : primary })
   attributesElement.ele('option', { name: 'CSS.SELECTOR' }).ele('value').ele('option', { name: 'FOREGROUND', value: v('property') })
   const CSS_UNICODE_RANGE = attributesElement.ele('option', { name: 'CSS.UNICODE.RANGE' }).ele('value')
   CSS_UNICODE_RANGE.ele('option', { name: 'FOREGROUND', value: v('magenta') })
@@ -889,6 +894,227 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
   attributesElement.ele('option', { name: 'INLINE_REFACTORING_SETTINGS_FOCUSED', value: activeBackground })
   attributesElement.ele('option', { name: 'INLINE_REFACTORING_SETTINGS_HOVERED', value: activeBackground })
 
+  // Islands resolves most component colors through this named palette. Without
+  // overriding it, inherited controls continue to use the stock gray/blue
+  // palette even when their direct UI keys are not present in this theme.
+  const textOverAccent = options.color === 'dark' ? mainWindowBackground : '#ffffff'
+  const namedColors = isNocturne
+    ? {
+        white: '#ffffff',
+        black: '#000000',
+        transparent: transparentBackground,
+        'gray-20': mainWindowBackground,
+        'gray-30': activeBackground,
+        'gray-40': elevatedBackground,
+        'blue-90': primary,
+        'blue-110': secondary,
+        'blue-140': infoSurface,
+        'green-90': success,
+        'green-110': success,
+        'green-140': successSurface,
+        'red-110': danger,
+        'purple-140': violetSurface,
+
+        'text-default': foreground,
+        'text-muted': secondaryForeground,
+        'text-secondary': secondaryForeground,
+        'text-disabled': v('comment'),
+        'text-over-accent': textOverAccent,
+        'text-over-accent-inverted': options.color === 'dark' ? '#ffffff' : '#000000',
+        'text-link': secondary,
+        'text-error': danger,
+        'text-warning': warning,
+        'text-success': success,
+        'editor-text': syntaxForeground,
+
+        'layer-0-bg': background,
+        'layer-0-bg-inline': activeBackground,
+        'layer-0-border': border,
+        'layer-0-border-inline': border,
+        'layer-1-bg': activeBackground,
+        'layer-1-bg-inline': elevatedBackground,
+        'layer-1-border': border,
+        'layer-1-border-inline': border,
+        'layer-2-bg': elevatedBackground,
+        'layer-2-bg-inline': elevatedBackground,
+        'layer-2-border': border,
+        'layer-2-border-inline': border,
+
+        'accent-brand-bg': primary,
+        'accent-brand-border': primary,
+        'accent-brand-bg-secondary': infoSurface,
+        'accent-brand-border-secondary': secondary,
+        'accent-error-bg': danger,
+        'accent-error-border': danger,
+        'accent-error-bg-secondary': errorSurface,
+        'accent-error-border-secondary': danger,
+        'accent-warning-bg': warning,
+        'accent-warning-border': warning,
+        'accent-warning-bg-secondary': warningSurface,
+        'accent-warning-border-secondary': warning,
+        'accent-success-bg': success,
+        'accent-success-border': success,
+        'accent-success-bg-secondary': successSurface,
+        'accent-success-border-secondary': success,
+        'accent-neutral-bg': v('ignored'),
+        'accent-ai-bg': violetSurface,
+        'accent-ai-border': v('violet'),
+
+        'core-bg-transparent-hovered': selectionBackground,
+        'core-bg-transparent-pressed': selectionBackgroundActive,
+        'core-border-transparent': border,
+        'dialog-bg': background,
+        'dialog-bg-inline': activeBackground,
+        'dialog-border': border,
+        'popup-bg': elevatedBackground,
+        'popup-bg-inline': elevatedBackground,
+        'popup-border': border,
+        'popup-border-inline': border,
+        'editor-bg': background,
+        'editor-bg-inline': activeBackground,
+        'editor-border': border,
+        'editor-border-inline': border,
+        'editor-border-alt': border,
+        'tool-window-bg': background,
+        'tool-window-bg-inline': activeBackground,
+        'tool-window-bg-alt': activeBackground,
+        'tool-window-border': border,
+        'tool-window-border-inline': border,
+        'main-window-bg': mainWindowBackground,
+        'main-window-bg-alt': activeBackground,
+        'main-window-border': border,
+
+        'control-bg': activeBackground,
+        'control-bg-disabled': background,
+        'control-bg-raised': elevatedBackground,
+        'control-border': border,
+        'control-border-disabled': border,
+        'control-border-raised': v('ignored'),
+        'control-border-over-accent': `${textOverAccent}80`,
+        'control-bg-small': selectionBackground,
+        'control-bg-small-disabled': activeBackground,
+        'control-border-small': v('ignored'),
+        'control-brand-bg': primary,
+        'control-brand-border': primary,
+        'control-error-bg': danger,
+        'control-error-border': danger,
+        'control-error-border-secondary': danger,
+        'control-warning-bg': warning,
+        'control-warning-border': warning,
+        'control-warning-border-secondary': warning,
+        'control-success-bg': success,
+        'control-success-border': success,
+
+        'toolbar-bg-hovered': selectionBackground,
+        'toolbar-bg-pressed': selectionBackgroundActive,
+        'toolbar-border': border,
+        'toolbar-selected-bg': selectionBackgroundActive,
+        'toolbar-selected-bg-hovered': selectionBackgroundActive,
+        'toolbar-selected-bg-active': primary,
+        'toolbar-run-bg': success,
+        'toolbar-run-bg-hovered': success,
+        'toolbar-stop-bg': danger,
+        'toolbar-stop-bg-hovered': danger,
+
+        'feedback-bg': elevatedBackground,
+        'feedback-border': border,
+        'feedback-bg-inline': activeBackground,
+        'feedback-brand-bg': infoSurface,
+        'feedback-brand-border': secondary,
+        'feedback-success-bg': successSurface,
+        'feedback-success-border': success,
+        'feedback-warning-bg': warningSurface,
+        'feedback-warning-border': warning,
+        'feedback-error-bg': errorSurface,
+        'feedback-error-border': danger,
+        'feedback-control-border': border,
+        'feedback-ai-bg': violetSurface,
+        'feedback-ai-border': v('violet'),
+
+        'selection-bg-active': selectionBackgroundActive,
+        'selection-bg-active-muted': selectionBackground,
+        'selection-bg-inactive': selectionBackgroundInActive,
+        'selection-bg-hovered': selectionBackground,
+        'tab-selected-bg-active': selectionBackgroundActive,
+        'tab-selected-bg-inactive': selectionBackgroundInActive,
+        'tab-selected-border-active': primary,
+        'tab-selected-border-inactive': border,
+        'tab-bg-hovered': selectionBackground,
+        'tab-file-color-mask-bg': `${background}80`,
+
+        'got-it-bg': elevatedBackground,
+        'got-it-border': border,
+        'got-it-text-link': secondary,
+        'got-it-text-step': secondaryForeground,
+        'got-it-shortcut-bg': selectionBackground,
+        'got-it-code-border': border,
+        'got-it-contrast-button-bg': primary,
+        'inlay-bg': selectionBackground,
+        'inlay-border': border,
+        'toggle-off-bg': background,
+        'toggle-button-bg': v('ignored'),
+        'toggle-border': border,
+        'editor-floating-toolbar-bg': elevatedBackground,
+        'popup-completion-match-text': secondary,
+        'presentation-assistant-bg': activeBackground,
+        'search-match-bg': warningSurface,
+        'tree-indent-guide-border': border,
+        'icon-default-stroke': foreground,
+        'icon-over-accent': textOverAccent,
+        'icon-green-stroke': success,
+
+        'grad-hor-left': activeBackground,
+        'grad-hor-right': elevatedBackground,
+        'grad-ver-top': activeBackground,
+        'grad-ver-bottom': elevatedBackground,
+        'grad-g1-amber-a1': warning,
+        'grad-g1-amber-a1-transparent': `${warning}00`,
+        'grad-g1-amber-a1-secondary': warningSurface,
+        'grad-g1-amber-a2': v('orange'),
+        'grad-g1-amber-bg': warningSurface,
+        'grad-g2-rust-a1': v('orange'),
+        'grad-g2-rust-a1-transparent': `${v('orange')}00`,
+        'grad-g2-rust-a1-secondary': errorSurface,
+        'grad-g2-rust-a2': danger,
+        'grad-g2-rust-bg': errorSurface,
+        'grad-g3-olive-a1': success,
+        'grad-g3-olive-a1-transparent': `${success}00`,
+        'grad-g3-olive-a1-secondary': successSurface,
+        'grad-g3-olive-a2': v('green'),
+        'grad-g3-olive-bg': successSurface,
+        'grad-g4-sky-a1': secondary,
+        'grad-g4-sky-a1-transparent': `${secondary}00`,
+        'grad-g4-sky-a1-secondary': infoSurface,
+        'grad-g4-sky-a2': primary,
+        'grad-g4-sky-bg': infoSurface,
+        'grad-g5-cobalt-a1': primary,
+        'grad-g5-cobalt-a1-transparent': `${primary}00`,
+        'grad-g5-cobalt-a1-secondary': infoSurface,
+        'grad-g5-cobalt-a2': secondary,
+        'grad-g5-cobalt-bg': infoSurface,
+        'grad-g6-plum-a1': tertiary,
+        'grad-g6-plum-a1-transparent': `${tertiary}00`,
+        'grad-g6-plum-a1-secondary': violetSurface,
+        'grad-g6-plum-a2': v('violet'),
+        'grad-g6-plum-bg': violetSurface,
+        'grad-g7-violet-a1': v('violet'),
+        'grad-g7-violet-a1-transparent': `${v('violet')}00`,
+        'grad-g7-violet-a1-secondary': violetSurface,
+        'grad-g7-violet-a2': tertiary,
+        'grad-g7-violet-bg': violetSurface,
+        'grad-g8-ocean-a1': v('cyan'),
+        'grad-g8-ocean-a1-transparent': `${v('cyan')}00`,
+        'grad-g8-ocean-a1-secondary': infoSurface,
+        'grad-g8-ocean-a2': primary,
+        'grad-g8-ocean-bg': infoSurface,
+        'grad-g9-grass-a1': success,
+        'grad-g9-grass-a1-transparent': `${success}00`,
+        'grad-g9-grass-a1-secondary': successSurface,
+        'grad-g9-grass-a2': v('green'),
+        'grad-g9-grass-bg': successSurface,
+      }
+    : undefined
+
   return {
     editorTheme: theme.end({ pretty: true }),
     UITheme: {
@@ -897,6 +1123,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
       editorScheme: options.editorScheme,
       parentTheme: options.color === 'dark' ? 'Islands Dark' : 'Islands Light',
       author: pkg.author,
+      ...(namedColors ? { colors: namedColors } : {}),
       ui: {
         '*': {
           foreground,
@@ -927,6 +1154,8 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           'arc.compact': 16,
           'borderArcLength': 14,
           'borderArcLength.compact': 10,
+          // Islands uses this width as workspace spacing. Its color must match
+          // the tool-window surface rather than the structural border color.
           'borderWidth': 6,
           'borderWidth.compact': 4,
           'borderColor': background,
@@ -947,7 +1176,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           topBorderWidth: 0,
         },
         'Component': {
-          borderColor: pick({ light: colors.gray[3], dark: colors.gray[1] }),
+          borderColor: isNocturne ? border : pick({ light: colors.gray[3], dark: colors.gray[1] }),
           focusColor: secondary,
           errorFocusColor: danger,
           warningFocusColor: warning,
@@ -1038,7 +1267,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           background,
           hoverBackground: selectionBackground,
           hoverInactiveBackground: selectionBackgroundInActive,
-          underTabsBorderColor: transparentBackground,
+          underTabsBorderColor: isNocturne ? border : transparentBackground,
           underlinedBorderColor: primary,
           underlinedTabBackground: selectionBackgroundActive,
           inactiveUnderlinedTabBorderColor: v('primary', '80'),
@@ -1071,8 +1300,8 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           borderColor: border,
         },
         'SearchMatch': {
-          startBackground: pick({ light: '#e6cc7766', dark: '#e6cc7744' }),
-          endBackground: pick({ light: '#e6cc7766', dark: '#e6cc7744' }),
+          startBackground: isNocturne ? warningSurface : pick({ light: '#e6cc7766', dark: '#e6cc7744' }),
+          endBackground: isNocturne ? warningSurface : pick({ light: '#e6cc7766', dark: '#e6cc7744' }),
         },
         'SearchEverywhere': {
           Tab: {
@@ -1179,7 +1408,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
           Violet: violetSurface,
           Orange: v('orange', '24'),
           Rose: v('magenta', '24'),
-          Gray: pick({ light: '#6a737d1a', dark: '#dedcd51a' }),
+          Gray: isNocturne ? selectionBackground : pick({ light: '#6a737d1a', dark: '#dedcd51a' }),
         },
         'Bookmark': {
           mnemonicForeground: tertiary,
@@ -1187,7 +1416,7 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
         },
         'icons': {
           ColorPalette: {
-            'Actions.Grey': pick({ light: colors.gray[3], dark: colors.gray[1] }),
+            'Actions.Grey': isNocturne ? punctuation : pick({ light: colors.gray[3], dark: colors.gray[1] }),
             'Actions.Red': v('red'),
             'Actions.Yellow': v('yellow'),
             'Actions.Green': v('green'),
@@ -1207,13 +1436,13 @@ export default function getEditorSchemeTheme(options: GetThemeOptions) {
             'Objects.GreenAndroid': success,
 
             [`Checkbox.Background.Default${options.color === 'dark' ? '.Dark' : ''}`]: background,
-            [`Checkbox.Border.Default${options.color === 'dark' ? '.Dark' : ''}`]: pick({ light: colors.gray[3], dark: colors.gray[1] }),
+            [`Checkbox.Border.Default${options.color === 'dark' ? '.Dark' : ''}`]: isNocturne ? border : pick({ light: colors.gray[3], dark: colors.gray[1] }),
             [`Checkbox.Foreground.Selected${options.color === 'dark' ? '.Dark' : ''}`]: foreground,
             [`Checkbox.Focus.Wide${options.color === 'dark' ? '.Dark' : ''}`]: v('secondary', '80'),
             [`Checkbox.Focus.Thin.Default${options.color === 'dark' ? '.Dark' : ''}`]: secondary,
             [`Checkbox.Focus.Thin.Selected${options.color === 'dark' ? '.Dark' : ''}`]: secondary,
             [`Checkbox.Background.Disabled${options.color === 'dark' ? '.Dark' : ''}`]: v('comment'),
-            [`Checkbox.Border.Disabled${options.color === 'dark' ? '.Dark' : ''}`]: pick({ light: colors.gray[3], dark: colors.gray[1] }),
+            [`Checkbox.Border.Disabled${options.color === 'dark' ? '.Dark' : ''}`]: isNocturne ? border : pick({ light: colors.gray[3], dark: colors.gray[1] }),
             [`Checkbox.Foreground.Disabled${options.color === 'dark' ? '.Dark' : ''}`]: foreground,
             // "Checkbox.Border.Default": "Grey8",
             // "Checkbox.Background.Selected": "Blue4",

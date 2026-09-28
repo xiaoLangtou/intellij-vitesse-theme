@@ -14,5 +14,16 @@
         <themeProvider id="com.xlt.idea.idea-themes.dark.spectrum" path="/themes/vitesse.dark.spectrum.theme.json" />
         <themeProvider id="com.xlt.idea.idea-themes.daylight" path="/themes/vitesse.daylight.theme.json" />
         <themeProvider id="com.xlt.idea.idea-themes.daylight.white" path="/themes/vitesse.daylight.white.theme.json" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne" path="/themes/vitesse.nocturne.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.azureus" path="/themes/vitesse.nocturne.azureus.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.bordo" path="/themes/vitesse.nocturne.bordo.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.obscuro" path="/themes/vitesse.nocturne.obscuro.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.sereno" path="/themes/vitesse.nocturne.sereno.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.uva" path="/themes/vitesse.nocturne.uva.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.viola" path="/themes/vitesse.nocturne.viola.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.minimus" path="/themes/vitesse.nocturne.minimus.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.lux" path="/themes/vitesse.nocturne.lux.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.hibernus" path="/themes/vitesse.nocturne.hibernus.theme.json" targetUi="islands" />
+        <themeProvider id="com.xlt.idea.idea-themes.nocturne.lilac" path="/themes/vitesse.nocturne.lilac.theme.json" targetUi="islands" />
     </extensions>
 </idea-plugin>

@@ -89,6 +89,115 @@ async function buildThemes() {
         editorThemePath: './src/main/resources/themes/vitesse.daylight.white.xml',
         UIPath: './src/main/resources/themes/vitesse.daylight.white.theme.json',
       },
+      {
+        base: {
+          name: 'XLT Nocturne',
+          color: 'dark',
+          nocturne: true,
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Azureus',
+          color: 'dark',
+          nocturne: true,
+          nocturneVariant: 'azureus',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.azureus.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.azureus.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Bordo',
+          color: 'dark',
+          nocturne: true,
+          nocturneVariant: 'bordo',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.bordo.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.bordo.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Obscuro',
+          color: 'dark',
+          nocturne: true,
+          nocturneVariant: 'obscuro',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.obscuro.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.obscuro.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Sereno',
+          color: 'dark',
+          nocturne: true,
+          nocturneVariant: 'sereno',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.sereno.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.sereno.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Uva',
+          color: 'dark',
+          nocturne: true,
+          nocturneVariant: 'uva',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.uva.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.uva.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Viola',
+          color: 'dark',
+          nocturne: true,
+          nocturneVariant: 'viola',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.viola.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.viola.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Minimus',
+          color: 'dark',
+          nocturne: true,
+          nocturneVariant: 'minimus',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.minimus.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.minimus.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Lux',
+          color: 'light',
+          nocturne: true,
+          nocturneVariant: 'lux',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.lux.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.lux.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Hibernus',
+          color: 'light',
+          nocturne: true,
+          nocturneVariant: 'hibernus',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.hibernus.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.hibernus.theme.json',
+      },
+      {
+        base: {
+          name: 'XLT Nocturne Lilac',
+          color: 'light',
+          nocturne: true,
+          nocturneVariant: 'lilac',
+        },
+        editorThemePath: './src/main/resources/themes/vitesse.nocturne.lilac.xml',
+        UIPath: './src/main/resources/themes/vitesse.nocturne.lilac.theme.json',
+      },
 
     ]
 

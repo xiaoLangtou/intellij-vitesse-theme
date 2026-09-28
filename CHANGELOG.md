@@ -4,6 +4,23 @@
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-09-28
+
+### Fixed
+- Matched the Nocturne editor palettes to their original Noctis semantic colors and propagated each variant through Islands named UI colors
+- Restored Islands workspace spacing while keeping outer tool-window borders transparent; editor and tool-window header separators remain intact
+
+## [2.1.0] - 2026-09-28
+
+### Added
+- Added the complete eleven-theme **XLT Nocturne** family inspired by the MIT-licensed Noctis palettes: Nocturne, Azureus, Bordo, Obscuro, Sereno, Uva, Viola, Minimus, Lux, Hibernus, and Lilac
+- Added distinct teal, azure, rose, indigo, violet, deep-black, soft-teal, and muted Islands UI surface hierarchies with dedicated editor, toolbar, popup, tab, tree, list, notification, selection, and icon-palette colors
+- Added warm ivory Lux, cool blue-white Hibernus, and violet-white Lilac themes using the Islands Light parent
+- Added explicit JavaScript, TypeScript, Vue, HTML, CSS, and JSON mappings for warm variables, coral tags, mint strings, violet literals, pink keywords, and cyan functions and types
+
+### Changed
+- Added the original Noctis copyright notice while retaining all existing attribution
+
 ## [2.0.0] - 2026-09-19
 
 ### Changed
@@ -251,7 +268,9 @@
 ### Added
 - first release
 
-[Unreleased]: https://github.com/loosheng/intellij-vitesse-theme/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/loosheng/intellij-vitesse-theme/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/loosheng/intellij-vitesse-theme/compare/v2.1.0...v2.1.1
+[2.1.0]: https://github.com/loosheng/intellij-vitesse-theme/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/loosheng/intellij-vitesse-theme/compare/v1.5.0...v2.0.0
 [1.5.0]: https://github.com/loosheng/intellij-vitesse-theme/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/loosheng/intellij-vitesse-theme/compare/v1.3.0...v1.4.0

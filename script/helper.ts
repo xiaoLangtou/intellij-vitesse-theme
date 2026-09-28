@@ -8,6 +8,8 @@ export interface GetThemeOptions {
   spectrum?: boolean
   daylight?: boolean
   daylightWhite?: boolean
+  nocturne?: boolean
+  nocturneVariant?: 'azureus' | 'bordo' | 'obscuro' | 'sereno' | 'uva' | 'viola' | 'minimus' | 'lux' | 'hibernus' | 'lilac'
   editorScheme: string
 }
 function toArray<T>(arr: T | T[]): T[] {
@@ -41,23 +43,31 @@ function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export function createThemeHelpers({ color, soft = false, black = false, spectrum = false, daylight = false, daylightWhite = false }: GetThemeOptions) {
+export function createThemeHelpers({ color, soft = false, black = false, spectrum = false, daylight = false, daylightWhite = false, nocturne = false, nocturneVariant }: GetThemeOptions) {
   const pick = (options: { light?: string; dark?: string }) => options[color]
 
   const v = (key: keyof typeof VitesseThemes, op = '') => {
+    const nocturneLightFallback = ['lux', 'hibernus', 'lilac'].includes(nocturneVariant || '')
+      ? VitesseThemes[`nocturneLux${capitalize(key)}` as keyof typeof VitesseThemes]
+      : undefined
     let obj = daylightWhite
       ? (VitesseThemes[`daylightWhite${capitalize(key)}` as keyof typeof VitesseThemes]
         || VitesseThemes[`daylight${capitalize(key)}` as keyof typeof VitesseThemes]
         || VitesseThemes[key])
       : daylight
         ? (VitesseThemes[`daylight${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key])
-        : spectrum
-          ? (VitesseThemes[`spectrum${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key])
-          : black
-            ? (VitesseThemes[`black${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key])
-            : soft
-              ? (VitesseThemes[`soft${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key])
-              : VitesseThemes[key]
+        : nocturne
+          ? ((nocturneVariant && VitesseThemes[`nocturne${capitalize(nocturneVariant)}${capitalize(key)}` as keyof typeof VitesseThemes])
+            || nocturneLightFallback
+            || VitesseThemes[`nocturne${capitalize(key)}` as keyof typeof VitesseThemes]
+            || VitesseThemes[key])
+          : spectrum
+            ? (VitesseThemes[`spectrum${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key])
+            : black
+              ? (VitesseThemes[`black${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key])
+              : soft
+                ? (VitesseThemes[`soft${capitalize(key)}` as keyof typeof VitesseThemes] || VitesseThemes[key])
+                : VitesseThemes[key]
 
     if (typeof obj === 'string')
       obj = [obj, obj]

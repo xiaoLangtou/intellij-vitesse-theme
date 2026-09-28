@@ -21,6 +21,8 @@ The optional **XLT Nightfall Spectrum** variant adds a Monokai Spectrum-inspired
 
 **XLT Daylight White** keeps the same Daylight syntax palette on the pure-white background used by XLT Nightfall Light.
 
+The **XLT Nocturne** family adapts all eleven Noctis variants for the JetBrains Islands UI. Its eight dark themes offer teal, azure, rose, indigo, violet, and muted surfaces; Lux, Hibernus, and Lilac add warm ivory, cool blue-white, and violet-white light themes.
+
 Perfect for developers who appreciate clean aesthetics and clear syntax highlighting across all supported languages and file types.
 
 <h3 align="center"> Ported from antfu's <a href="https://github.com/antfu/vscode-theme-vitesse">
@@ -103,11 +105,14 @@ pnpm install
 
 This project Ported from [vscode-theme-vitesse](https://github.com/antfu/vscode-theme-vitesse).
 
+The XLT Nocturne family is inspired by all eleven variants of [Noctis](https://github.com/liviuschera/noctis) by Liviu Schera.
+
 ---
 ## License
 MIT - Copyright (c) 2021 Anthony Fu <br>
 MIT - Copyright (c) 2023 LooSheng <br>
-MIT - Copyright (c) 2026 xlt
+MIT - Copyright (c) 2026 xlt <br>
+MIT - Copyright (c) 2018 Liviu Schera
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
